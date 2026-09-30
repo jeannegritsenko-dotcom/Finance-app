@@ -112,8 +112,9 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .src-amount{font-size:14.5px;font-weight:600;color:var(--dim);}
 .tabbar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;padding:10px 24px calc(10px + env(safe-area-inset-bottom,0px));border-radius:28px 28px 0 0;z-index:5;}
 .tab{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim2);font-size:11px;padding:6px 20px;border-radius:16px;transition:color .2s;cursor:pointer;}
-.tab svg{width:23px;height:23px;}
+.tab svg{width:23px;height:23px;color:var(--text);opacity:.45;}
 .tab.active{color:var(--text);}
+.tab.active svg{opacity:1;}
 .fab{width:56px;height:56px;border-radius:50%;background:var(--invbg);display:flex;align-items:center;justify-content:center;margin-top:-30px;box-shadow:0 8px 22px rgba(0,0,0,.25), 0 4px 12px rgba(0,0,0,.4);border:1px solid var(--inv-border);transition:transform .15s;cursor:pointer;}
 .fab:active{transform:scale(.92);}
 .fab svg{width:24px;height:24px;color:var(--invfg);}
@@ -341,6 +342,13 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </main>
 
   <main id="view-stats" class="view">
+    <div class="stats-summary glass">
+      <div class="balance-label">Доход в этом месяце</div>
+      <div class="stats-row">
+        <span class="stats-amount" id="statsAmount">₽96 500</span>
+        <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="deltaText">+12%</span></span>
+      </div>
+    </div>
     <div class="section-header"><h2>Отчёт</h2></div>
     <div class="report-card glass">
       <div class="segmented" id="reportPeriod" style="margin-bottom:14px;">
@@ -350,13 +358,6 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
       <div class="report-row"><span>Расходы</span><b id="reportExpense"></b></div>
       <div class="report-row"><span>Доходы</span><b id="reportIncome"></b></div>
       <div class="report-foot" id="reportFoot"></div>
-    </div>
-    <div class="stats-summary glass">
-      <div class="balance-label">Доход в этом месяце</div>
-      <div class="stats-row">
-        <span class="stats-amount" id="statsAmount">₽96 500</span>
-        <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="deltaText">+12%</span></span>
-      </div>
     </div>
     <div class="chart-card glass">
       <div class="chart-title">Доход по месяцам</div>
