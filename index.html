@@ -638,25 +638,11 @@ function fmtDT(ts){
   const hh=String(d.getHours()).padStart(2,'0'),mm=String(d.getMinutes()).padStart(2,'0');
   return d.getDate()+' '+(lang==='en'?mon:mon.toLowerCase()+'.')+' • '+hh+':'+mm;
 }
-const EMPTY_EMOJI_CYCLE=['💸','💰','💵','🤑'];
-let _emojiTimer=null;
 function renderRecent(){
-  if(_emojiTimer){clearInterval(_emojiTimer);_emojiTimer=null;}
   const el=$('recentList');
   if(!el)return;
   if(!transactions.length){
     el.innerHTML=emptyCard('💸','Пока нет операций','Здесь будут появляться ваши последние доходы и расходы');
-    const span=el.querySelector('.empty-emoji');
-    if(span){
-      span.classList.add('live-emoji');
-      let i=0;
-      _emojiTimer=setInterval(function(){
-        i=(i+1)%EMPTY_EMOJI_CYCLE.length;
-        span.textContent=EMPTY_EMOJI_CYCLE[i];
-        span.classList.add('flip');
-        setTimeout(function(){span&&span.classList.remove('flip');},380);
-      },850);
-    }
     return;
   }
   const t=transactions[transactions.length-1];
