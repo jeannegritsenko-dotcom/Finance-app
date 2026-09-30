@@ -231,8 +231,8 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 .key svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
 .pin-link{margin-top:30px;background:none;border:none;color:var(--dim);font-size:15px;font-family:inherit;cursor:pointer;padding:8px 12px;}
 [data-anim="off"] *,[data-anim="off"] *::before,[data-anim="off"] *::after{transition-duration:.001ms!important;animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;}
-[data-anim="off"] .recent-emoji{animation-duration:1.6s!important;animation-iteration-count:infinite!important;}
-[data-anim="off"] .recent-emoji.flip{animation-duration:.35s!important;animation-iteration-count:1!important;}
+[data-anim="off"] .live-emoji{animation-duration:1.6s!important;animation-iteration-count:infinite!important;}
+[data-anim="off"] .flip{animation-duration:.38s!important;animation-iteration-count:1!important;}
 .wheel-value{text-align:center;font-size:15px;color:var(--dim);margin:2px 0 16px;}
 .wheel-wrap{position:relative;height:280px;display:flex;align-items:center;justify-content:center;gap:6px;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%,#000 70%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 30%,#000 70%,transparent 100%);}
 .wheel-highlight{position:absolute;left:4px;right:4px;top:50%;transform:translateY(-50%);height:40px;background:var(--glass-strong);border:1px solid var(--glass-border);border-radius:14px;pointer-events:none;z-index:0;}
@@ -254,9 +254,10 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 .order-btn:active{background:var(--glass);}
 .recent-card{display:flex;align-items:center;gap:12px;border-radius:20px;padding:14px 16px;margin-bottom:10px;}
 @keyframes emojiFlip{0%{transform:scale(.4) rotate(-25deg);opacity:.2;}55%{transform:scale(1.25) rotate(8deg);opacity:1;}100%{transform:scale(1) rotate(0deg);}}
-.recent-emoji.flip{animation:emojiFlip .38s cubic-bezier(.34,1.56,.64,1) !important;}
-@keyframes emojiLive{0%,100%{transform:translateY(0) scale(1) rotate(0deg);}25%{transform:translateY(-6px) scale(1.14) rotate(-10deg);}50%{transform:translateY(0) scale(1.05) rotate(0deg);}75%{transform:translateY(3px) scale(1.1) rotate(9deg);}}
-.recent-emoji{font-size:28px;line-height:1;flex-shrink:0;width:32px;text-align:center;display:inline-block;animation:emojiLive 1.6s ease-in-out infinite;transform-origin:60% 80%;}
+.flip{animation:emojiFlip .38s cubic-bezier(.34,1.56,.64,1) !important;}
+@keyframes emojiLive{0%,100%{transform:translateY(0) scale(1) rotate(0deg);}25%{transform:translateY(-8px) scale(1.12) rotate(-9deg);}50%{transform:translateY(0) scale(1.04) rotate(0deg);}75%{transform:translateY(4px) scale(1.08) rotate(8deg);}}
+.live-emoji{display:inline-block;animation:emojiLive 1.6s ease-in-out infinite;transform-origin:60% 80%;}
+.recent-emoji{font-size:28px;line-height:1;flex-shrink:0;width:32px;text-align:center;}
 .recent-info{flex:1;min-width:0;}
 .recent-name{font-size:15px;font-weight:600;}
 .recent-date{font-size:12.5px;color:var(--dim2);margin-top:2px;}
@@ -637,30 +638,33 @@ function fmtDT(ts){
   const hh=String(d.getHours()).padStart(2,'0'),mm=String(d.getMinutes()).padStart(2,'0');
   return d.getDate()+' '+(lang==='en'?mon:mon.toLowerCase()+'.')+' • '+hh+':'+mm;
 }
-const EMOJI_CYCLE={income:['💰','💵','💸','🤑'],expense:['💸','🛍️','🧾','💳']};
+const EMPTY_EMOJI_CYCLE=['💸','💰','💵','🤑'];
 let _emojiTimer=null;
 function renderRecent(){
   if(_emojiTimer){clearInterval(_emojiTimer);_emojiTimer=null;}
   const el=$('recentList');
   if(!el)return;
-  if(!transactions.length){el.innerHTML=emptyCard('🧾','Пока нет операций','Здесь будут появляться ваши последние доходы и расходы');return;}
+  if(!transactions.length){
+    el.innerHTML=emptyCard('💸','Пока нет операций','Здесь будут появляться ваши последние доходы и расходы');
+    const span=el.querySelector('.empty-emoji');
+    if(span){
+      span.classList.add('live-emoji');
+      let i=0;
+      _emojiTimer=setInterval(function(){
+        i=(i+1)%EMPTY_EMOJI_CYCLE.length;
+        span.textContent=EMPTY_EMOJI_CYCLE[i];
+        span.classList.add('flip');
+        setTimeout(function(){span&&span.classList.remove('flip');},380);
+      },850);
+    }
+    return;
+  }
   const t=transactions[transactions.length-1];
   const sign=t.type==='income'?'+':'−',color=t.type==='income'?'var(--money-pos)':'var(--money-neg)';
   const label=t.label&&t.label.trim()?tr(t.label):tr(t.type==='income'?'Доход':'Расход');
-  const custom=!!t.emoji,emoji=t.emoji||(t.type==='income'?'💰':'💸');
-  el.innerHTML=rowHTML(t.id,20,'','<span class="recent-emoji" id="recentEmoji">'+emoji+'</span><div class="recent-info"><div class="recent-name">'+esc(label)+'</div><div class="recent-date">'+fmtDT(t.ts)+'</div></div><span class="recent-amount" style="color:'+color+'">'+sign+money(t.amount)+'</span>');
+  const emoji=t.emoji||(t.type==='income'?'💰':'💸');
+  el.innerHTML=rowHTML(t.id,20,'','<span class="recent-emoji">'+emoji+'</span><div class="recent-info"><div class="recent-name">'+esc(label)+'</div><div class="recent-date">'+fmtDT(t.ts)+'</div></div><span class="recent-amount" style="color:'+color+'">'+sign+money(t.amount)+'</span>');
   initRows(el);
-  if(!custom){
-    const seq=EMOJI_CYCLE[t.type];let i=0;
-    _emojiTimer=setInterval(function(){
-      const span=document.getElementById('recentEmoji');
-      if(!span){clearInterval(_emojiTimer);_emojiTimer=null;return;}
-      i=(i+1)%seq.length;
-      span.textContent=seq[i];
-      span.classList.add('flip');
-      setTimeout(function(){span&&span.classList.remove('flip');},380);
-    },850);
-  }
 }
 function renderStats(){
   const now=new Date(),y=now.getFullYear(),m=now.getMonth();
