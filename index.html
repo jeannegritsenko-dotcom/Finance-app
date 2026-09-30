@@ -28,6 +28,7 @@
   --delta-bg:rgba(255,255,255,.09);
   --hairline:rgba(255,255,255,.06);
   --handle:rgba(255,255,255,.25);
+  --card-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07);
   --money-pos:#30d158;
   --money-neg:#ff453a;
   --input-bg:rgba(255,255,255,.05);
@@ -38,28 +39,29 @@
 }
 :root[data-appearance="light"]{
   --text:#0b0b0d;
-  --dim:rgba(20,20,22,.55);
-  --dim2:rgba(20,20,22,.32);
+  --dim:rgba(20,20,22,.56);
+  --dim2:rgba(20,20,22,.34);
   --icon:rgba(20,20,22,.72);
-  --glass:rgba(255,255,255,.55);
-  --glass-strong:rgba(255,255,255,.8);
-  --glass-border:rgba(0,0,0,.08);
+  --glass:rgba(255,255,255,.86);
+  --glass-strong:rgba(255,255,255,.97);
+  --glass-border:rgba(20,20,30,.07);
   --fill:rgba(10,10,14,.85);
   --track-bg:rgba(0,0,0,.08);
   --invbg:#0b0b0c;
   --invfg:#ffffff;
   --inv-border:rgba(255,255,255,.2);
-  --page1:#f4f4f6;--page2:#eceef0;--page3:#e3e4e8;
-  --glow-c:rgba(255,255,255,.7);
+  --page1:#ffffff;--page2:#f2f2f5;--page3:#eceef1;
+  --glow-c:rgba(120,140,255,0);
+  --card-shadow:0 4px 16px rgba(30,30,60,.07), 0 1px 2px rgba(30,30,60,.05), inset 0 1px 0 rgba(255,255,255,.6);
   --switch-off:rgba(0,0,0,.1);
   --switch-on:#34c759;
-  --del-active:rgba(0,0,0,.08);
-  --icon-bg:rgba(0,0,0,.05);
-  --delta-bg:rgba(0,0,0,.06);
-  --hairline:rgba(0,0,0,.07);
-  --handle:rgba(0,0,0,.2);
-  --input-bg:rgba(0,0,0,.04);
-  --focus-border:rgba(0,0,0,.25);
+  --del-active:rgba(0,0,0,.06);
+  --icon-bg:rgba(0,0,0,.045);
+  --delta-bg:rgba(0,0,0,.05);
+  --hairline:rgba(0,0,0,.075);
+  --handle:rgba(0,0,0,.16);
+  --input-bg:rgba(0,0,0,.035);
+  --focus-border:rgba(0,0,0,.22);
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--page3);}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -73,7 +75,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .view{display:none;padding:14px 16px 118px;position:relative;z-index:1;}
 .view.active{display:block;animation:fadeIn .28s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.glass{background:var(--glass);backdrop-filter:blur(28px) saturate(150%);-webkit-backdrop-filter:blur(28px) saturate(150%);border:1px solid var(--glass-border);box-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07);}
+.glass{background:var(--glass);backdrop-filter:blur(28px) saturate(150%);-webkit-backdrop-filter:blur(28px) saturate(150%);border:1px solid var(--glass-border);box-shadow:var(--card-shadow);}
 .balance-card{border-radius:28px;padding:24px 22px;margin:8px 0 20px;text-align:center;}
 .balance-label{font-size:14px;color:var(--dim);}
 .balance-amount{font-size:40px;font-weight:800;letter-spacing:-1px;margin:6px 0 5px;}
