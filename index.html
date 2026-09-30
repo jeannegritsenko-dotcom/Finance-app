@@ -29,6 +29,8 @@
   --hairline:rgba(255,255,255,.06);
   --handle:rgba(255,255,255,.25);
   --sheet-bg:rgba(30,30,34,.98);
+  --submit-bg:#ffffff;
+  --submit-fg:#0b0b0c;
   --card-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07);
   --row-shadow:rgba(0,0,0,.4);
   --money-pos:#30d158;
@@ -52,6 +54,8 @@
   --page1:#ffffff;--page2:#ffffff;--page3:#ffffff;
   --glow-c:rgba(120,140,255,0);
   --sheet-bg:rgba(255,255,255,.98);
+  --submit-bg:#0b0b0d;
+  --submit-fg:#ffffff;
   --card-shadow:0 1px 3px rgba(20,20,45,.045);
   --row-shadow:rgba(30,30,50,.14);
   --switch-off:rgba(0,0,0,.1);
@@ -139,7 +143,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .form-input:focus{border-color:var(--focus-border);}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 input[type=number]{-moz-appearance:textfield;}
-.submit-btn{width:100%;padding:15px 0;border-radius:16px;background:var(--invbg);color:var(--invfg);font-size:15px;font-weight:700;border:none;margin-top:4px;cursor:pointer;transition:transform .15s;}
+.submit-btn{width:100%;padding:15px 0;border-radius:16px;background:var(--submit-bg);color:var(--submit-fg);font-size:15px;font-weight:700;border:none;margin-top:4px;cursor:pointer;transition:transform .15s;}
 .submit-btn:active{transform:scale(.97);}
 @keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(3px)}30%,50%,70%{transform:translateX(-5px)}40%,60%{transform:translateX(5px)}}
 .shake{animation:shake .4s;}
