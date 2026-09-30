@@ -251,7 +251,8 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 .order-btn:disabled{opacity:.28;pointer-events:none;}
 .order-btn:active{background:var(--glass);}
 .recent-card{display:flex;align-items:center;gap:12px;border-radius:20px;padding:14px 16px;margin-bottom:10px;}
-.recent-emoji{font-size:28px;line-height:1;flex-shrink:0;width:32px;text-align:center;}
+@keyframes emojiLive{0%,100%{transform:translateY(0) scale(1) rotate(0deg);}30%{transform:translateY(-3px) scale(1.05) rotate(-4deg);}60%{transform:translateY(1px) scale(1.02) rotate(3deg);}}
+.recent-emoji{font-size:28px;line-height:1;flex-shrink:0;width:32px;text-align:center;display:inline-block;animation:emojiLive 2.4s ease-in-out infinite;transform-origin:60% 80%;}
 .recent-info{flex:1;min-width:0;}
 .recent-name{font-size:15px;font-weight:600;}
 .recent-date{font-size:12.5px;color:var(--dim2);margin-top:2px;}
