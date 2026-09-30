@@ -582,14 +582,14 @@ const TRASH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-w
 const fmt=n=>Math.round(n).toLocaleString('ru-RU');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-function renderBalance(){
+function renderBalance(){saveData();
   document.getElementById('balanceAmount').textContent=settings.hideBalance?'••••••':money(balance);
   const neg=monthDelta<0;
   document.getElementById('subText').textContent=(neg?'−':'+')+money(Math.abs(monthDelta))+' '+tr('за месяц');
   document.getElementById('subArrow').classList.toggle('down',neg);
 }
 function emptyCard(emoji,title,sub,type){return '<div class="empty-card glass" onclick="openForm(\''+type+'\')"><div class="empty-emoji">'+emoji+'</div><div class="empty-title">'+tr(title)+'</div><div class="empty-sub">'+tr(sub)+'</div></div>';}
-function renderGoals(){
+function renderGoals(){saveData();
   const el=document.getElementById('goalsList');
   el.innerHTML=goals.length?goals.map(function(g){
     const pct=Math.min(100,Math.round(g.saved/g.target*100));
@@ -597,7 +597,7 @@ function renderGoals(){
   }).join(''):emptyCard('🎯','У вас еще нет целей','Создайте и копите на свои желания!','goal');
   initRows(el);
 }
-function renderCredits(){
+function renderCredits(){saveData();
   const el=document.getElementById('creditsList');
   el.innerHTML=credits.length?credits.map(function(c){
     const pct=Math.min(100,Math.round(c.paid/c.total*100));
@@ -605,14 +605,14 @@ function renderCredits(){
   }).join(''):emptyCard('🏦','Вы еще не брали в долг и не давали в займы','Начните отслеживать задолженности, чтобы ничего не забыть','credit');
   initRows(el);
 }
-function renderSubs(){
+function renderSubs(){saveData();
   const el=document.getElementById('subsList');
   el.innerHTML=subs.length?subs.map(function(s){
     return rowHTML(s.id,20,'','<div class="item-icon"><svg viewBox="0 0 24 24"><use href="#i-repeat"/></svg></div><div class="item-info"><div class="item-top" style="margin-bottom:0"><span>'+esc(tr(s.name))+'</span><span>'+money(s.amount)+'</span></div></div>');
   }).join(''):emptyCard('💳','Пока нет подписок','Добавьте регулярные платежи и подписки для отслеживания','sub');
   initRows(el);
 }
-function renderSources(){
+function renderSources(){saveData();
   const el=document.getElementById('sourcesList');
   el.innerHTML=sources.length?sources.map(function(s,i){
     const op=Math.max(.28,1-i*.22);
@@ -759,6 +759,7 @@ document.addEventListener('pointerdown',function(e){
   document.querySelectorAll('.row').forEach(function(o){if(o._r>.5&&!o._removing)springTo(o,0,0);});
 },true);
 
+loadData();
 renderBalance();renderGoals();renderCredits();renderSubs();renderSources();renderStats();
 attachSwipe(document.getElementById('goalsList'),{list:goals,msg:'Цель удалена',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!goals.length)renderGoals();}});
 attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!credits.length)renderCredits();}});
@@ -1042,6 +1043,14 @@ function applySnapshot(d){
   transactions.splice.apply(transactions,[0,transactions.length].concat((d.transactions||[]).map(function(t){return {type:t.type==='expense'?'expense':'income',amount:nm(t.amount),label:String(t.label||''),ts:nm(t.ts)||Date.now()};})));
   renderReport();
   renderAll();
+}
+function saveData(){try{localStorage.setItem('financeData',JSON.stringify(snapshotData()));}catch(e){}}
+function loadData(){
+  try{
+    const raw=localStorage.getItem('financeData');
+    if(!raw)return;
+    applySnapshot(JSON.parse(raw));
+  }catch(e){}
 }
 async function useCap(name){try{if(!window.claude||typeof window.claude.use!=='function')return null;return await window.claude.use(name);}catch(e){return null;}}
 function csvCell(v){v=String(v==null?'':v);return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
