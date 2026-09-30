@@ -1194,8 +1194,8 @@ function armDanger(row,fn){
   buzz('error');
   setTimeout(function(){if(row._armed){row._armed=false;cap.textContent=base;}},3000);
 }
-document.getElementById('resetBtn').addEventListener('click',function(){armDanger(this,function(){location.reload();});});
-document.getElementById('wipeBtn').addEventListener('click',function(){armDanger(this,function(){try{localStorage.removeItem('financeSettings');}catch(e){}location.reload();});});
+document.getElementById('resetBtn').addEventListener('click',function(){armDanger(this,function(){try{localStorage.removeItem('financeData');}catch(e){}location.reload();});});
+document.getElementById('wipeBtn').addEventListener('click',function(){armDanger(this,function(){try{localStorage.removeItem('financeData');localStorage.removeItem('financeSettings');}catch(e){}location.reload();});});
 
 /* ===== PIN lock ===== */
 const pinEl=$('pin'),pinTitle=$('pinTitle'),pinSub=$('pinSub'),pinDots=$('pinDots'),pinLink=$('pinLink');
