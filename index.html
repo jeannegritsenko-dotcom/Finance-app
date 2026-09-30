@@ -120,6 +120,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .fab:active{transform:scale(.92);}
 .fab svg{width:24px;height:24px;color:var(--invfg);}
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8;}
+.view.dimmed{opacity:.4;transition:opacity .25s;}
 .backdrop.open{opacity:1;pointer-events:auto;}
 .sheet{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;border-radius:28px 28px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);z-index:9;max-height:80vh;overflow-y:auto;}
 .sheet.open{transform:translateY(0);}
@@ -875,9 +876,9 @@ function fieldsHTML(type){
 }
 function showGrid(){currentType=null;sheetTitle.textContent=tr('Добавить');backBtn.style.display='none';sheetGrid.style.display='grid';sheetForm.style.display='none';}
 function showForm(type){currentType=type;sheetTitle.textContent=tr(TITLES[type]);backBtn.style.display='inline-block';sheetGrid.style.display='none';formFields.innerHTML=fieldsHTML(type);sheetForm.style.display='block';}
-function openSheet(){sheet.classList.add('open');backdrop.classList.add('open');}
+function openSheet(){sheet.classList.add('open');backdrop.classList.add('open');document.querySelectorAll('.view.active').forEach(function(v){v.classList.add('dimmed');});}
 function openForm(type){openSheet();showForm(type);}
-function closeSheet(){sheet.classList.remove('open');backdrop.classList.remove('open');setTimeout(showGrid,300);}
+function closeSheet(){sheet.classList.remove('open');backdrop.classList.remove('open');document.querySelectorAll('.view').forEach(function(v){v.classList.remove('dimmed');});setTimeout(showGrid,300);}
 function notify(msg){buzz('light');toast.textContent=tr(msg);toast.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>toast.classList.remove('show'),1800);}
 function shake(){formFields.classList.add('shake');setTimeout(()=>formFields.classList.remove('shake'),400);}
 function num(id){const v=parseFloat(document.getElementById(id).value);return isNaN(v)||v<0?0:v;}
