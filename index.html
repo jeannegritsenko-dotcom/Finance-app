@@ -807,7 +807,21 @@ attachSwipe(document.getElementById('goalsList'),{list:goals,msg:'Цель уд�
 attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!credits.length)renderCredits();}});
 attachSwipe(document.getElementById('subsList'),{list:subs,msg:'Подписка удалена',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!subs.length)renderSubs();}});
 attachSwipe(document.getElementById('sourcesList'),{list:sources,msg:'Источник дохода удалён',onRemove:function(s){if(s){balance-=s.amount;monthDelta-=s.amount;monthIncome-=s.amount;renderBalance();renderStats();}if(!sources.length)renderSources();}});
-attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Транзакция удалена',onRemove:function(){renderRecent();renderReport();renderStats();}});
+attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Транзакция удалена',onRemove:function(t){
+  if(t){
+    if(t.type==='income'){
+      balance-=t.amount;monthDelta-=t.amount;monthIncome-=t.amount;
+      var lbl=(t.label&&t.label.trim())?t.label:'Другое';
+      var src=sources.find(function(s){return s.name.toLowerCase()===lbl.toLowerCase()||tr(s.name).toLowerCase()===lbl.toLowerCase();});
+      if(src){src.amount-=t.amount;if(src.amount<=0){sources.splice(sources.indexOf(src),1);}}
+      renderSources();
+    }else{
+      balance+=t.amount;monthDelta+=t.amount;
+    }
+    renderBalance();
+  }
+  renderRecent();renderReport();renderStats();
+}});
 
 const tabs=document.querySelectorAll('.tab');
 const views={home:document.getElementById('view-home'),stats:document.getElementById('view-stats')};
