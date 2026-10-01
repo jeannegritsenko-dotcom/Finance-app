@@ -363,6 +363,12 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
         <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="deltaText">+12%</span></span>
       </div>
     </div>
+    <div class="chart-card glass">
+      <div class="chart-title">Доход по месяцам</div>
+      <div class="bars" id="monthBars"></div>
+    </div>
+    <div class="section-header"><h2>Источники дохода</h2></div>
+    <div id="sourcesList"></div>
     <div class="section-header"><h2>Отчёт</h2></div>
     <div class="report-card glass">
       <div class="segmented" id="reportPeriod" style="margin-bottom:14px;">
@@ -373,12 +379,6 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
       <div class="report-row"><span>Доходы</span><b id="reportIncome"></b></div>
       <div class="report-foot" id="reportFoot"></div>
     </div>
-    <div class="chart-card glass">
-      <div class="chart-title">Доход по месяцам</div>
-      <div class="bars" id="monthBars"></div>
-    </div>
-    <div class="section-header"><h2>Источники дохода</h2></div>
-    <div id="sourcesList"></div>
   </main>
 
   <nav class="tabbar glass">
