@@ -11,15 +11,15 @@
   --dim:rgba(235,235,245,.6);
   --dim2:rgba(235,235,245,.36);
   --icon:rgba(245,245,247,.82);
-  --glass:rgba(255,255,255,.06);
-  --glass-strong:rgba(255,255,255,.11);
-  --glass-border:rgba(255,255,255,.13);
+  --glass:rgba(255,255,255,.085);
+  --glass-strong:rgba(255,255,255,.13);
+  --glass-border:rgba(255,255,255,.1);
   --fill:rgba(255,255,255,.92);
   --track-bg:rgba(255,255,255,.09);
   --invbg:#ffffff;
   --invfg:#0b0b0c;
   --inv-border:rgba(255,255,255,.4);
-  --page1:#19191b;--page2:#0a0a0b;--page3:#000000;
+  --page1:#060607;--page2:#020203;--page3:#000000;
   --glow-c:rgba(255,255,255,.14);
   --switch-off:rgba(255,255,255,.15);
   --switch-on:#30d158;
@@ -117,8 +117,9 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .src-name{flex:1;font-size:14.5px;}
 .src-amount{font-size:14.5px;font-weight:600;color:var(--dim);}
-.tabbar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;padding:10px 24px calc(10px + env(safe-area-inset-bottom,0px));border-radius:28px 28px 0 0;z-index:5;}
-.tab{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim2);font-size:11px;padding:6px 20px;border-radius:16px;transition:color .2s;cursor:pointer;}
+.tabbar{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:452px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;padding:10px 20px;border-radius:30px;z-index:5;}
+.tab{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim2);font-size:11px;padding:6px 20px;border-radius:16px;transition:color .2s;cursor:pointer;position:relative;z-index:2;}
+.tab-pill{position:absolute;top:6px;bottom:6px;background:var(--glass-strong);border:1px solid var(--glass-border);border-radius:16px;z-index:1;transition:left .32s cubic-bezier(.32,.9,.3,1),width .32s cubic-bezier(.32,.9,.3,1);pointer-events:none;}
 .tab svg{width:23px;height:23px;color:var(--text);opacity:.45;}
 .tab.active{color:var(--text);}
 .tab.active svg{opacity:1;}
@@ -382,6 +383,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </main>
 
   <nav class="tabbar glass">
+    <div class="tab-pill" id="tabPill"></div>
     <button class="tab active" data-view="home">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/></svg>
       Главная
@@ -854,12 +856,26 @@ attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Тра
 
 const tabs=document.querySelectorAll('.tab');
 const views={home:document.getElementById('view-home'),stats:document.getElementById('view-stats')};
+function moveTabPill(el){
+  const pill=document.getElementById('tabPill');
+  if(!pill||!el)return;
+  pill.style.left=el.offsetLeft+'px';
+  pill.style.width=el.offsetWidth+'px';
+}
 tabs.forEach(t=>t.addEventListener('click',()=>{
   tabs.forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
   Object.values(views).forEach(v=>v.classList.remove('active'));
   views[t.dataset.view].classList.add('active');
+  moveTabPill(t);
 }));
+requestAnimationFrame(function(){
+  const pill=document.getElementById('tabPill');
+  if(pill)pill.style.transition='none';
+  moveTabPill(document.querySelector('.tab.active'));
+  requestAnimationFrame(function(){requestAnimationFrame(function(){if(pill)pill.style.transition='';});});
+});
+window.addEventListener('resize',function(){moveTabPill(document.querySelector('.tab.active'));});
 
 const sheet=document.getElementById('sheet'),backdrop=document.getElementById('backdrop'),fab=document.getElementById('fab'),toast=document.getElementById('toast');
 const sheetGrid=document.getElementById('sheetGrid'),sheetForm=document.getElementById('sheetForm'),sheetTitle=document.getElementById('sheetTitle'),backBtn=document.getElementById('backBtn'),formFields=document.getElementById('formFields'),formSubmit=document.getElementById('formSubmit');
