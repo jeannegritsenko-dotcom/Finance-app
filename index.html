@@ -33,6 +33,7 @@
   --submit-fg:#0b0b0c;
   --card-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07);
   --row-shadow:rgba(0,0,0,.4);
+  --tb-grad1:#262626;--tb-grad2:#1e1e1e;--tb-pill:#050505;--tb-fab1:#2d2d2d;--tb-fab2:#262626;--tb-fab-border:#3d3d3d;
   --money-pos:#30d158;
   --money-neg:#ff453a;
   --input-bg:rgba(255,255,255,.05);
@@ -58,6 +59,7 @@
   --submit-fg:#ffffff;
   --card-shadow:0 1px 3px rgba(20,20,45,.045);
   --row-shadow:rgba(30,30,50,.09);
+  --tb-grad1:#fbfbfc;--tb-grad2:#f0f0f3;--tb-pill:#ffffff;--tb-fab1:#fcfcfd;--tb-fab2:#f2f2f5;--tb-fab-border:#e4e4e8;
   --switch-off:rgba(0,0,0,.1);
   --switch-on:#34c759;
   --del-active:rgba(0,0,0,.05);
@@ -117,16 +119,16 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .src-name{flex:1;font-size:14.5px;}
 .src-amount{font-size:14.5px;font-weight:600;color:var(--dim);}
-.tabbar{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:452px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;padding:10px 20px;border-radius:30px;z-index:5;}
-.tab{background:none;border:none;display:flex;align-items:center;justify-content:center;color:var(--dim2);padding:12px 24px;border-radius:999px;transition:color .2s;cursor:pointer;position:relative;z-index:2;}
-.tab-pill{position:absolute;top:4px;bottom:4px;background:var(--glass-strong);border:1px solid var(--glass-border);border-radius:999px;z-index:1;transition:left .32s cubic-bezier(.32,.9,.3,1),width .32s cubic-bezier(.32,.9,.3,1),background .3s,backdrop-filter .3s;pointer-events:none;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);}
-.tab-pill.glass-move{background:rgba(255,255,255,.035);backdrop-filter:blur(24px) saturate(190%);-webkit-backdrop-filter:blur(24px) saturate(190%);border-color:rgba(255,255,255,.22);}
+.tabbar{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:348px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;padding:0 16px;height:60px;border-radius:30px;z-index:5;background:linear-gradient(180deg,var(--tb-grad1) 0%,var(--tb-grad2) 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),inset 0 1px 0 rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.45);}
+.tab{background:none;border:none;display:flex;align-items:center;justify-content:center;color:var(--text);padding:12px 20px;border-radius:999px;transition:opacity .2s;cursor:pointer;position:relative;z-index:2;opacity:.96;}
+.tab.active{opacity:1;}
+.tab-pill{position:absolute;top:3px;bottom:3px;left:0;background:var(--tb-pill);border-radius:27px;z-index:1;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 1px 6px rgba(0,0,0,.4);transition:transform .35s cubic-bezier(.3,.9,.3,1),width .35s cubic-bezier(.3,.9,.3,1);pointer-events:none;}
 .tab svg{width:27px;height:27px;color:var(--text);opacity:1;}
 .tab.active{color:var(--text);}
 .tab.active svg{opacity:1;}
-.fab{width:56px;height:56px;border-radius:50%;background:var(--glass-strong);display:flex;align-items:center;justify-content:center;margin-top:-30px;box-shadow:0 8px 22px rgba(0,0,0,.25), 0 4px 12px rgba(0,0,0,.4);border:1px solid var(--glass-border);transition:transform .15s;cursor:pointer;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);}
+.fab{width:55px;height:55px;border-radius:50%;background:linear-gradient(180deg,var(--tb-fab1),var(--tb-fab2));display:flex;align-items:center;justify-content:center;margin-top:-27.5px;box-shadow:0 4px 14px rgba(0,0,0,.4);border:1.5px solid var(--tb-fab-border);transition:transform .15s;cursor:pointer;}
 .fab:active{transform:scale(.92);}
-.fab svg{color:var(--text);width:24px;height:24px;}
+.fab svg{color:var(--text);width:27px;height:27px;}
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8;}
 .view.dimmed .empty-emoji{opacity:.32;transition:opacity .25s;}
 .backdrop.open{opacity:1;pointer-events:auto;}
@@ -383,20 +385,33 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   <nav class="tabbar glass">
     <div class="tab-pill" id="tabPill"></div>
     <button class="tab active" data-view="home">
-      <svg viewBox="0 0 24 24">
-        <path d="M3 11 12 3.8l9 7.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="15.2" y="5.3" width="2.3" height="3.6" fill="currentColor"/>
-        <path fill-rule="evenodd" fill="currentColor" d="M5.8 10.2h12.4v7.8a2 2 0 0 1-2 2H7.8a2 2 0 0 1-2-2z M10.2 14.2h3.6v5.8h-3.6z"/>
+      <svg width="27" height="27" viewBox="0 0 28 28" fill="none">
+        <path d="M2.2 13.2 14 3.4l11.8 9.8" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20.6 6.2v-2.6h2.8v5.1z" fill="currentColor"/>
+        <path fill="currentColor" fill-rule="evenodd" d="M14 7.2 22.6 14.3v9.1c0 1.1-.9 2-2 2H7.4c-1.1 0-2-.9-2-2v-9.1L14 7.2Zm-2.6 18.2h5.2v-7.1c0-.5-.4-.9-.9-.9h-3.4c-.5 0-.9.4-.9.9v7.1Z"/>
       </svg>
     </button>
     <button class="fab" id="fab" aria-label="Добавить">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      <svg width="27" height="27" viewBox="0 0 30 30" fill="none"><path d="M15 3.5v23M3.5 15h23" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>
     </button>
     <button class="tab" data-view="stats">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11"/><path d="M12 20V4"/><path d="M20 20v-8"/></svg>
+      <svg width="27" height="27" viewBox="0 0 28 28" fill="none"><path d="M5 23V14.5M14 23V6M23 23v-9.5" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>
     </button>
     <button class="tab" id="settingsTab" aria-label="Настройки" onclick="openSettings()">
-      <svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd"><path d="M9.59 2.29 L14.41 2.29 L14.91 4.98 L17.16 3.43 L20.57 6.84 L19.02 9.09 L21.71 9.59 L21.71 14.41 L19.02 14.91 L20.57 17.16 L17.16 20.57 L14.91 19.02 L14.41 21.71 L9.59 21.71 L9.09 19.02 L6.84 20.57 L3.43 17.16 L4.98 14.91 L2.29 14.41 L2.29 9.59 L4.98 9.09 L3.43 6.84 L6.84 3.43 L9.09 4.98 Z M15.60 12.00 A3.6 3.6 0 1 0 8.40 12.00 A3.6 3.6 0 1 0 15.60 12.00 Z"/></svg>
+      <svg width="27" height="27" viewBox="0 0 28 28">
+        <defs><mask id="gear-mask"><rect width="28" height="28" fill="#fff"/><circle cx="14" cy="14" r="4" fill="#000"/></mask></defs>
+        <g fill="currentColor" mask="url(#gear-mask)">
+          <circle cx="14" cy="14" r="8.6"/>
+          <rect x="11.2" y="1.6" width="5.6" height="6" rx="1.6" transform="rotate(0 14 14)"/>
+          <rect x="11.2" y="1.6" width="5.6" height="6" rx="1.6" transform="rotate(45 14 14)"/>
+          <rect x="11.2" y="1.6" width="5.6" height="6" rx="1.6" transform="rotate(90 14 14)"/>
+          <rect x="11.2" y="1.6" width="5.6" height="6" rx="1.6" transform="rotate(135 14 14)"/>
+          <rect x="11.2" y="1.6" width="5.6" height="6" rx="1.6" transform="rotate(180 14 14)"/>
+          <rect x="11.2" y="1.6" width="5.6" height="6" rx="1.6" transform="rotate(225 14 14)"/>
+          <rect x="11.2" y="1.6" width="5.6" height="6" rx="1.6" transform="rotate(270 14 14)"/>
+          <rect x="11.2" y="1.6" width="5.6" height="6" rx="1.6" transform="rotate(315 14 14)"/>
+        </g>
+      </svg>
     </button>
   </nav>
 
@@ -863,11 +878,8 @@ let _pillGlassTimer=null;
 function moveTabPill(el){
   const pill=document.getElementById('tabPill');
   if(!pill||!el)return;
-  pill.classList.add('glass-move');
-  if(_pillGlassTimer)clearTimeout(_pillGlassTimer);
-  pill.style.left=el.offsetLeft+'px';
   pill.style.width=el.offsetWidth+'px';
-  _pillGlassTimer=setTimeout(function(){pill.classList.remove('glass-move');},340);
+  pill.style.transform='translateX('+el.offsetLeft+'px)';
 }
 tabs.forEach(t=>t.addEventListener('click',()=>{
   tabs.forEach(x=>x.classList.remove('active'));
