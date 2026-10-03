@@ -121,12 +121,12 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .tab{background:none;border:none;display:flex;align-items:center;justify-content:center;color:var(--dim2);padding:12px 24px;border-radius:999px;transition:color .2s;cursor:pointer;position:relative;z-index:2;}
 .tab-pill{position:absolute;top:4px;bottom:4px;background:var(--glass-strong);border:1px solid var(--glass-border);border-radius:999px;z-index:1;transition:left .32s cubic-bezier(.32,.9,.3,1),width .32s cubic-bezier(.32,.9,.3,1),background .3s,backdrop-filter .3s;pointer-events:none;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);}
 .tab-pill.glass-move{background:rgba(255,255,255,.035);backdrop-filter:blur(24px) saturate(190%);-webkit-backdrop-filter:blur(24px) saturate(190%);border-color:rgba(255,255,255,.22);}
-.tab svg{width:23px;height:23px;color:var(--text);opacity:1;}
+.tab svg{width:27px;height:27px;color:var(--text);opacity:1;}
 .tab.active{color:var(--text);}
 .tab.active svg{opacity:1;}
-.fab{width:56px;height:56px;border-radius:50%;background:var(--invbg);display:flex;align-items:center;justify-content:center;margin-top:-30px;box-shadow:0 8px 22px rgba(0,0,0,.25), 0 4px 12px rgba(0,0,0,.4);border:1px solid var(--inv-border);transition:transform .15s;cursor:pointer;}
+.fab{width:56px;height:56px;border-radius:50%;background:var(--glass-strong);display:flex;align-items:center;justify-content:center;margin-top:-30px;box-shadow:0 8px 22px rgba(0,0,0,.25), 0 4px 12px rgba(0,0,0,.4);border:1px solid var(--glass-border);transition:transform .15s;cursor:pointer;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);}
 .fab:active{transform:scale(.92);}
-.fab svg{width:24px;height:24px;color:var(--invfg);}
+.fab svg{color:var(--text);width:24px;height:24px;}
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8;}
 .view.dimmed .empty-emoji{opacity:.32;transition:opacity .25s;}
 .backdrop.open{opacity:1;pointer-events:auto;}
