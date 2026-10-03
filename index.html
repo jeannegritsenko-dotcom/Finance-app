@@ -931,6 +931,10 @@ function shake(){formFields.classList.add('shake');setTimeout(()=>formFields.cla
 function num(id){const v=parseFloat(document.getElementById(id).value);return isNaN(v)||v<0?0:v;}
 function text(id){return document.getElementById(id).value.trim();}
 
+document.addEventListener('click',function(e){
+  const el=e.target.closest('button, .nav-row, .cur-row, .lang-row, .row, .order-row, .emoji-input, .settings-row, a');
+  if(el)buzz('light');
+},true);
 fab.addEventListener('click',function(){buzz('light');openSheet();});
 document.querySelectorAll('.sheet-opt').forEach(b=>b.addEventListener('click',()=>showForm(b.dataset.type)));
 
