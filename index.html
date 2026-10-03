@@ -932,7 +932,7 @@ function num(id){const v=parseFloat(document.getElementById(id).value);return is
 function text(id){return document.getElementById(id).value.trim();}
 
 document.addEventListener('click',function(e){
-  const el=e.target.closest('button, .nav-row, .cur-row, .lang-row, .row, .order-row, .emoji-input, .settings-row, a');
+  const el=e.target.closest('button, .nav-row, .cur-row, .lang-row, .row, .order-row, .emoji-input, .settings-row, .empty-card, a');
   if(el)buzz('light');
 },true);
 fab.addEventListener('click',function(){buzz('light');openSheet();});
