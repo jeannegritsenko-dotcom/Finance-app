@@ -1398,7 +1398,7 @@ function buildWheel(el,max,initial,onChange){
   for(let v=0;v<=max;v++)html+='<div class="wheel-item">'+String(v).padStart(2,'0')+'</div>';
   for(let i=0;i<PAD;i++)html+='<div class="wheel-item"></div>';
   el.innerHTML=html;
-  let last=initial,settleT=null;
+  let last=initial;
   function fade(){
     const center=el.scrollTop/ROWH+PAD;
     for(let i=0;i<n;i++){
@@ -1406,11 +1406,11 @@ function buildWheel(el,max,initial,onChange){
       el.children[i].style.opacity=Math.max(.16,1-Math.abs(i+.5-(center))*.34);
     }
   }
-  function settle(){
+  function checkVal(){
     const idx=Math.round(el.scrollTop/ROWH),val=Math.max(0,Math.min(max,idx));
     if(val!==last){last=val;buzz('select');tickSound();onChange(val);}
   }
-  el.addEventListener('scroll',function(){fade();clearTimeout(settleT);settleT=setTimeout(settle,90);});
+  el.addEventListener('scroll',function(){fade();checkVal();});
   el.scrollTop=initial*ROWH;fade();
   return {set:function(v){el.scrollTo({top:v*ROWH,behavior:settings.anim?'smooth':'auto'});}};
 }
