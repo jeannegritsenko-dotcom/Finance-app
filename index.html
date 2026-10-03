@@ -872,6 +872,7 @@ function moveTabPill(el){
   pill.style.transform='translateX('+el.offsetLeft+'px)';
 }
 tabs.forEach(t=>t.addEventListener('click',()=>{
+  buzz('light');
   tabs.forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
   document.getElementById('settingsTab').classList.remove('active');
@@ -881,6 +882,7 @@ tabs.forEach(t=>t.addEventListener('click',()=>{
   moveTabPill(t);
 }));
 document.getElementById('goalsTab').addEventListener('click',function(){
+  buzz('light');
   tabs.forEach(x=>x.classList.remove('active'));
   document.getElementById('settingsTab').classList.remove('active');
   this.classList.add('active');
@@ -929,7 +931,7 @@ function shake(){formFields.classList.add('shake');setTimeout(()=>formFields.cla
 function num(id){const v=parseFloat(document.getElementById(id).value);return isNaN(v)||v<0?0:v;}
 function text(id){return document.getElementById(id).value.trim();}
 
-fab.addEventListener('click',openSheet);
+fab.addEventListener('click',function(){buzz('light');openSheet();});
 document.querySelectorAll('.sheet-opt').forEach(b=>b.addEventListener('click',()=>showForm(b.dataset.type)));
 
 formSubmit.addEventListener('click',()=>{
@@ -974,7 +976,7 @@ formSubmit.addEventListener('click',()=>{
 
 /* ===== settings ===== */
 const settingsScreen=$('settingsScreen');
-function openSettings(){settingsScreen.classList.add('open');syncTgBack();document.querySelectorAll('.tab[data-view]').forEach(x=>x.classList.remove('active'));document.getElementById('goalsTab').classList.remove('active');document.getElementById('settingsTab').classList.add('active');moveTabPill(document.getElementById('settingsTab'));}
+function openSettings(){buzz('light');settingsScreen.classList.add('open');syncTgBack();document.querySelectorAll('.tab[data-view]').forEach(x=>x.classList.remove('active'));document.getElementById('goalsTab').classList.remove('active');document.getElementById('settingsTab').classList.add('active');moveTabPill(document.getElementById('settingsTab'));}
 let spStack=[];
 const tgBack=window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.BackButton;
 function syncTgBack(){
