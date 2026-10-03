@@ -842,9 +842,9 @@ document.addEventListener('pointerdown',function(e){
 
 loadData();
 renderBalance();renderGoals();renderCredits();renderSubs();renderSources();renderStats();renderRecent();
-attachSwipe(document.getElementById('goalsList'),{list:goals,msg:'Цель удалена',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!goals.length)renderGoals();}});
-attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!credits.length)renderCredits();}});
-attachSwipe(document.getElementById('subsList'),{list:subs,msg:'Подписка удалена',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!subs.length)renderSubs();}});
+attachSwipe(document.getElementById('goalsList'),{list:goals,msg:'Цель удалена',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!goals.length)renderGoals();else saveData();}});
+attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!credits.length)renderCredits();else saveData();}});
+attachSwipe(document.getElementById('subsList'),{list:subs,msg:'Подписка удалена',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!subs.length)renderSubs();else saveData();}});
 attachSwipe(document.getElementById('sourcesList'),{list:sources,msg:'Источник дохода удалён',onRemove:function(s){if(s){balance-=s.amount;monthDelta-=s.amount;monthIncome-=s.amount;renderBalance();renderStats();}if(!sources.length)renderSources();}});
 attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Транзакция удалена',onRemove:function(t){
   if(t){
