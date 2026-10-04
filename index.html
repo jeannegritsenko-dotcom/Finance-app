@@ -33,7 +33,8 @@
   --submit-fg:#0b0b0c;
   --card-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07);
   --row-shadow:rgba(0,0,0,.4);
-  --tb-grad1:rgba(45,45,45,.5);--tb-grad2:rgba(28,28,28,.55);--tb-pill:#050505;--tb-fab1:#2d2d2d;--tb-fab2:#262626;--tb-fab-border:#3d3d3d;
+  --tb-grad1:rgba(45,45,45,.5);--tb-grad2:rgba(28,28,28,.55);
+  --ctx-grad1:rgba(60,60,60,.28);--ctx-grad2:rgba(32,32,32,.32);--tb-pill:#050505;--tb-fab1:#2d2d2d;--tb-fab2:#262626;--tb-fab-border:#3d3d3d;
   --money-pos:#30d158;
   --money-neg:#ff453a;
   --input-bg:rgba(255,255,255,.05);
@@ -59,7 +60,8 @@
   --submit-fg:#ffffff;
   --card-shadow:0 1px 3px rgba(20,20,45,.045);
   --row-shadow:rgba(30,30,50,.09);
-  --tb-grad1:rgba(255,255,255,.5);--tb-grad2:rgba(238,238,242,.55);--tb-pill:#ffffff;--tb-fab1:#fcfcfd;--tb-fab2:#f2f2f5;--tb-fab-border:#e4e4e8;
+  --tb-grad1:rgba(255,255,255,.5);--tb-grad2:rgba(238,238,242,.55);
+  --ctx-grad1:rgba(255,255,255,.3);--ctx-grad2:rgba(238,238,242,.32);--tb-pill:#ffffff;--tb-fab1:#fcfcfd;--tb-fab2:#f2f2f5;--tb-fab-border:#e4e4e8;
   --switch-off:rgba(0,0,0,.1);
   --switch-on:#34c759;
   --del-active:rgba(0,0,0,.05);
@@ -188,6 +190,8 @@ input[type=number]{-moz-appearance:textfield;}
 .empty-card{cursor:pointer;transition:transform .15s;}
 .empty-card:active{transform:scale(.98);}
 .settings-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:20;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow:hidden;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);}
+.detail-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:25;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow-y:auto;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);padding:14px 20px calc(24px + env(safe-area-inset-bottom,0px));}
+.detail-screen.open{transform:translateX(0);}
 .settings-screen.open{transform:translateX(0);}
 .spage{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);transition:transform .34s cubic-bezier(.32,.72,0,1),opacity .34s ease;padding-bottom:56px;}
 .spage.sub{transform:translateX(100%);z-index:2;}
@@ -281,7 +285,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 .emoji-hint{text-align:center;font-size:12px;color:var(--dim2);margin:6px 0 12px;}
 .ctx-backdrop{position:fixed;inset:0;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s;}
 .ctx-backdrop.open{opacity:1;pointer-events:auto;}
-.ctx-menu{position:fixed;z-index:31;width:222px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,var(--tb-grad1) 0%,var(--tb-grad2) 100%);backdrop-filter:blur(30px) saturate(190%);-webkit-backdrop-filter:blur(30px) saturate(190%);box-shadow:0 12px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.1);border:1px solid var(--glass-border);opacity:0;transform:scale(.85);transform-origin:top center;transition:opacity .18s,transform .18s cubic-bezier(.3,1.5,.4,1);pointer-events:none;}
+.ctx-menu{position:fixed;z-index:31;width:222px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,var(--ctx-grad1) 0%,var(--ctx-grad2) 100%);backdrop-filter:blur(40px) saturate(220%);-webkit-backdrop-filter:blur(40px) saturate(220%);box-shadow:0 12px 40px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.14);opacity:0;transform:scale(.85);transform-origin:top center;transition:opacity .18s,transform .18s cubic-bezier(.3,1.5,.4,1);pointer-events:none;}
 .ctx-menu.open{opacity:1;transform:scale(1);pointer-events:auto;}
 .ctx-item{display:block;width:100%;text-align:left;padding:14px 16px;background:none;border:none;color:var(--text);font-size:15px;font-weight:500;cursor:pointer;}
 .ctx-item:active{background:rgba(255,255,255,.1);}
@@ -415,6 +419,11 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </nav>
 
   <div class="backdrop" id="backdrop" onclick="closeSheet()"></div>
+  <div class="detail-screen" id="detailScreen">
+    <div class="sp-top"><button class="sp-back" onclick="closeDetail()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Назад</button></div>
+    <h1 class="sp-title" id="detailTitle"></h1>
+    <div class="settings-body"></div>
+  </div>
   <div class="ctx-backdrop" id="ctxBackdrop"></div>
   <div class="ctx-menu" id="ctxMenu">
     <button class="ctx-item" id="ctxTopUp">Пополнить</button>
@@ -809,19 +818,30 @@ function removeRow(row,cfg,v){
   requestAnimationFrame(step);
 }
 function attachSwipe(container,cfg){
-  let drag=null,lastEnd=0;
+  let drag=null,lastEnd=0,lpTimer=null,lpFired=false;
   container.addEventListener('pointerdown',function(e){
     const row=e.target.closest('.row');
     if(!row||row._removing||(e.pointerType==='mouse'&&e.button!==0))return;
     document.querySelectorAll('.row').forEach(function(o){if(o!==row&&o._r>.5&&!o._removing)springTo(o,0,0);});
     stopAnim(row);
     drag={row:row,sx:e.clientX,sy:e.clientY,base:row._r,lock:null,last:row._r,lt:performance.now(),v:0,pid:e.pointerId};
+    lpFired=false;
+    if(cfg.longPress){
+      clearTimeout(lpTimer);
+      lpTimer=setTimeout(function(){
+        if(!drag||drag.lock)return;
+        lpFired=true;
+        buzz('medium');
+        cfg.longPress(row,e);
+      },480);
+    }
   });
   container.addEventListener('pointermove',function(e){
     if(!drag||e.pointerId!==drag.pid)return;
     const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;
     if(!drag.lock){
       if(Math.abs(dx)<6&&Math.abs(dy)<6)return;
+      clearTimeout(lpTimer);
       if(Math.abs(dx)>Math.abs(dy)*1.2){drag.lock='x';try{drag.row.setPointerCapture(drag.pid);}catch(_){}}else{drag=null;return;}
     }
     let r=drag.base-dx;
@@ -832,6 +852,7 @@ function attachSwipe(container,cfg){
     applyR(drag.row,r);
   });
   function finish(e,cancel){
+    clearTimeout(lpTimer);
     if(!drag||e.pointerId!==drag.pid)return;
     const d=drag;drag=null;
     if(d.lock!=='x')return;
@@ -845,6 +866,7 @@ function attachSwipe(container,cfg){
   container.addEventListener('click',function(e){
     const row=e.target.closest('.row');
     if(!row||row._removing)return;
+    if(lpFired){lpFired=false;return;}
     if(performance.now()-lastEnd<350)return;
     if(row._r>BW*.5&&e.clientX>=row.getBoundingClientRect().right-BW){removeRow(row,cfg,0);return;}
     if(row._r>2){springTo(row,0,0);return;}
@@ -857,6 +879,11 @@ document.addEventListener('pointerdown',function(e){
   document.querySelectorAll('.row').forEach(function(o){if(o._r>.5&&!o._removing)springTo(o,0,0);});
 },true);
 
+function openDetail(title){
+  document.getElementById('detailTitle').textContent=tr(title);
+  document.getElementById('detailScreen').classList.add('open');
+}
+function closeDetail(){document.getElementById('detailScreen').classList.remove('open');}
 function openGoalMenu(row){
   const goal=goals.find(function(g){return String(g.id)===row.dataset.id;});
   if(!goal)return;
@@ -865,7 +892,7 @@ function openGoalMenu(row){
   const rect=row.getBoundingClientRect(),menuH=110;
   let top=rect.bottom+8;
   if(top+menuH>window.innerHeight-90)top=rect.top-menuH-8;
-  let left=rect.left+rect.width/2-111;
+  let left=rect.left+rect.width/2-111-38;
   left=Math.max(12,Math.min(left,window.innerWidth-222-12));
   menu.style.top=top+'px';menu.style.left=left+'px';
   menu.dataset.goalId=goal.id;
@@ -900,9 +927,9 @@ document.getElementById('ctxPause').addEventListener('click',function(){
 });
 loadData();
 renderBalance();renderGoals();renderCredits();renderSubs();renderSources();renderStats();renderRecent();
-attachSwipe(document.getElementById('goalsList'),{list:goals,msg:'Цель удалена',tap:openGoalMenu,onRemove:function(){if(!goals.length)renderGoals();else saveData();}});
-attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!credits.length)renderCredits();else saveData();}});
-attachSwipe(document.getElementById('subsList'),{list:subs,msg:'Подписка удалена',tap:'Открыть детали — экран в разработке',onRemove:function(){if(!subs.length)renderSubs();else saveData();}});
+attachSwipe(document.getElementById('goalsList'),{list:goals,msg:'Цель удалена',tap:function(row){const g=goals.find(function(x){return String(x.id)===row.dataset.id;});openDetail(g?g.name:'Цель');},longPress:openGoalMenu,onRemove:function(){if(!goals.length)renderGoals();else saveData();}});
+attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:function(row){const c=credits.find(function(x){return String(x.id)===row.dataset.id;});openDetail(c?c.name:'Задолженность');},onRemove:function(){if(!credits.length)renderCredits();else saveData();}});
+attachSwipe(document.getElementById('subsList'),{list:subs,msg:'Подписка удалена',tap:function(row){const s=subs.find(function(x){return String(x.id)===row.dataset.id;});openDetail(s?s.name:'Подписка');},onRemove:function(){if(!subs.length)renderSubs();else saveData();}});
 attachSwipe(document.getElementById('sourcesList'),{list:sources,msg:'Источник дохода удалён',onRemove:function(s){if(s){balance-=s.amount;monthDelta-=s.amount;monthIncome-=s.amount;renderBalance();renderStats();}if(!sources.length)renderSources();}});
 attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Транзакция удалена',onRemove:function(t){
   if(t){
