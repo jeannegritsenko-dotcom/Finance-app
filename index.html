@@ -1117,7 +1117,8 @@ document.addEventListener('click',function(e){
   if(el)buzz('light');
 },true);
 fab.addEventListener('click',function(){buzz('light');openSheet();});
-document.querySelectorAll('.sheet-opt').forEach(b=>b.addEventListener('click',()=>showForm(b.dataset.type)));
+/* ВРЕМЕННО ОТКЛЮЧЕНО по просьбе: карточки Доход/Расход/Цель/Долг/Подписка пока ничего не делают, пока не придумаем новый экран */
+// document.querySelectorAll('.sheet-opt').forEach(b=>b.addEventListener('click',()=>showForm(b.dataset.type)));
 
 formSubmit.addEventListener('click',()=>{
   if(currentType==='income'||currentType==='expense'){
