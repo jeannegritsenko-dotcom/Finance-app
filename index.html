@@ -996,6 +996,7 @@ tabs.forEach(t=>t.addEventListener('click',()=>{
   views[t.dataset.view].classList.add('active');
   moveTabPill(t);
   document.querySelector('.topbar').style.display=t.dataset.view==='goals'?'none':'';
+  document.querySelector('.topbar-title').textContent=tr(t.dataset.view==='stats'?'Статистика':'Финансы');
 }));
 requestAnimationFrame(function(){
   const pill=document.getElementById('tabPill');
