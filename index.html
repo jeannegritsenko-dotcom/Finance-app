@@ -886,7 +886,13 @@ function openDetail(title){
   document.getElementById('detailTitle').textContent=tr(title);
   document.getElementById('detailScreen').classList.add('open');
 }
-function closeDetail(){document.getElementById('detailScreen').classList.remove('open');}
+function closeDetail(){
+  document.getElementById('detailScreen').classList.remove('open');
+  document.getElementById('goalsTab').classList.remove('active');
+  const curView=document.querySelector('.view.active');
+  const curTab=curView?document.querySelector('.tab[data-view="'+curView.id.replace('view-','')+'"]'):null;
+  if(curTab){curTab.classList.add('active');moveTabPill(curTab);}
+}
 function lockScroll(){document.body.style.overflow='hidden';}
 function unlockScroll(){document.body.style.overflow='';}
 function openGoalMenu(row){
@@ -979,13 +985,8 @@ document.getElementById('goalsTab').addEventListener('click',function(){
   tabs.forEach(x=>x.classList.remove('active'));
   document.getElementById('settingsTab').classList.remove('active');
   this.classList.add('active');
-  Object.values(views).forEach(v=>v.classList.remove('active'));
-  views.home.classList.add('active');
   moveTabPill(this);
-  setTimeout(function(){
-    const goalsSection=document.getElementById('goalsSection');
-    if(goalsSection)goalsSection.scrollIntoView({behavior:'smooth',block:'start'});
-  },80);
+  openDetail('Цели');
 });
 requestAnimationFrame(function(){
   const pill=document.getElementById('tabPill');
