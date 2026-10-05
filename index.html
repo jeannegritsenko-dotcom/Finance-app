@@ -661,7 +661,7 @@ function renderGoals(){saveData();
   el.innerHTML=goals.length?goals.map(function(g){
     const pct=Math.min(100,Math.round(g.saved/g.target*100));
     const pausedBadge=g.paused?'<span class="goal-paused">'+tr('На паузе')+'</span>':'';
-    return rowHTML(g.id,20,g.paused?'paused-row':'','<div class="item-icon">'+(ICONS[g.icon]||ICONS.goal)+'</div><div class="item-info"><div class="item-top"><span>'+esc(tr(g.name))+pausedBadge+'</span><span>'+pct+'%</span></div><div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div><div class="item-meta"><span>'+money(g.saved)+'</span><span>'+tr('из')+' '+money(g.target)+'</span></div></div>');
+    return rowHTML(g.id,20,g.paused?'paused-row':'','<div class="item-icon">'+(g.emoji?esc(g.emoji):(ICONS[g.icon]||ICONS.goal))+'</div><div class="item-info"><div class="item-top"><span>'+esc(tr(g.name))+pausedBadge+'</span><span>'+pct+'%</span></div><div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div><div class="item-meta"><span>'+money(g.saved)+'</span><span>'+tr('из')+' '+money(g.target)+'</span></div></div>');
   }).join(''):emptyCard('🎯','У вас еще нет целей','Создайте и копите на свои желания!','goal');
   initRows(el);
 }
@@ -669,14 +669,14 @@ function renderCredits(){saveData();
   const el=document.getElementById('creditsList');
   el.innerHTML=credits.length?credits.map(function(c){
     const pct=Math.min(100,Math.round(c.paid/c.total*100));
-    return rowHTML(c.id,20,'','<div class="item-icon">'+(ICONS[c.icon]||ICONS.credit)+'</div><div class="item-info"><div class="item-top"><span>'+esc(tr(c.name))+'</span><span>'+pct+'%</span></div><div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div><div class="item-meta"><span>'+tr('Выплачено')+' '+money(c.paid)+'</span><span>'+tr('из')+' '+money(c.total)+'</span></div></div>');
+    return rowHTML(c.id,20,'','<div class="item-icon">'+(c.emoji?esc(c.emoji):(ICONS[c.icon]||ICONS.credit))+'</div><div class="item-info"><div class="item-top"><span>'+esc(tr(c.name))+'</span><span>'+pct+'%</span></div><div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div><div class="item-meta"><span>'+tr('Выплачено')+' '+money(c.paid)+'</span><span>'+tr('из')+' '+money(c.total)+'</span></div></div>');
   }).join(''):emptyCard('🏦','Вы еще не брали в долг и не давали в займы','Начните отслеживать задолженности, чтобы ничего не забыть','credit');
   initRows(el);
 }
 function renderSubs(){saveData();
   const el=document.getElementById('subsList');
   el.innerHTML=subs.length?subs.map(function(s){
-    return rowHTML(s.id,20,'','<div class="item-icon"><svg viewBox="0 0 24 24"><use href="#i-repeat"/></svg></div><div class="item-info"><div class="item-top" style="margin-bottom:0"><span>'+esc(tr(s.name))+'</span><span>'+money(s.amount)+'</span></div></div>');
+    return rowHTML(s.id,20,'','<div class="item-icon">'+(s.emoji?esc(s.emoji):'<svg viewBox="0 0 24 24"><use href="#i-repeat"/></svg>')+'</div><div class="item-info"><div class="item-top" style="margin-bottom:0"><span>'+esc(tr(s.name))+'</span><span>'+money(s.amount)+'</span></div></div>');
   }).join(''):emptyCard('💳','Пока нет подписок','Добавьте регулярные платежи и подписки для отслеживания','sub');
   initRows(el);
 }
@@ -1004,13 +1004,14 @@ function fieldsHTML(type){
     const de=type==='income'?'💰':'💸';
     return '<div class="emoji-row"><input class="emoji-input" id="fEmoji" type="text" maxlength="8" autocomplete="off" placeholder="'+de+'"></div><div class="emoji-hint">'+tr('Нажмите на смайлик, чтобы выбрать свой')+'</div><input class="form-input" id="fAmount" type="number" inputmode="decimal" placeholder="'+tr('Сумма')+', '+S+'"><input class="form-input" id="fLabel" type="text" placeholder="'+tr(type==='income'?'Источник':'Категория')+' '+tr('(необязательно)')+'">';
   }
+  const emojiHTML='<div class="emoji-row"><input class="emoji-input" id="fEmoji2" type="text" maxlength="8" autocomplete="off" placeholder="🎯"></div><div class="emoji-hint">'+tr('Нажмите на смайлик, чтобы выбрать свой')+'</div>';
   if(type==='goal'){
-    return '<input class="form-input" id="fName" type="text" placeholder="'+tr('Название цели')+'"><input class="form-input" id="fTarget" type="number" inputmode="decimal" placeholder="'+tr('Нужная сумма')+', '+S+'">';
+    return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название цели')+'"><input class="form-input" id="fTarget" type="number" inputmode="decimal" placeholder="'+tr('Нужная сумма')+', '+S+'">';
   }
   if(type==='credit'){
-    return '<input class="form-input" id="fName" type="text" placeholder="'+tr('Название долга')+'"><input class="form-input" id="fTotal" type="number" inputmode="decimal" placeholder="'+tr('Общая сумма')+', '+S+'"><input class="form-input" id="fPaid" type="number" inputmode="decimal" placeholder="'+tr('Уже выплачено')+', '+S+' '+tr('(необязательно)')+'">';
+    return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название долга')+'"><input class="form-input" id="fTotal" type="number" inputmode="decimal" placeholder="'+tr('Общая сумма')+', '+S+'"><input class="form-input" id="fPaid" type="number" inputmode="decimal" placeholder="'+tr('Уже выплачено')+', '+S+' '+tr('(необязательно)')+'">';
   }
-  return '<input class="form-input" id="fName" type="text" placeholder="'+tr('Название подписки')+'"><input class="form-input" id="fAmount2" type="number" inputmode="decimal" placeholder="'+tr('Сумма')+', '+S+'">';
+  return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название подписки')+'"><input class="form-input" id="fAmount2" type="number" inputmode="decimal" placeholder="'+tr('Сумма')+', '+S+'">';
 }
 function showGrid(){currentType=null;sheetTitle.textContent=tr('Добавить');backBtn.style.display='none';sheetGrid.style.display='grid';sheetForm.style.display='none';}
 function showForm(type){currentType=type;sheetTitle.textContent=tr(TITLES[type]);backBtn.style.display='inline-block';sheetGrid.style.display='none';formFields.innerHTML=fieldsHTML(type);sheetForm.style.display='block';}
@@ -1050,19 +1051,19 @@ formSubmit.addEventListener('click',()=>{
   }else if(currentType==='goal'){
     const name=text('fName'),target=num('fTarget');
     if(!name||target<=0){shake();return;}
-    goals.push({name,target,saved:0,icon:'goal',id:uid()});
+    goals.push({name,target,saved:0,icon:'goal',emoji:text('fEmoji2')||null,id:uid()});
     renderGoals();
     notify(tf('Цель «{n}» создана','{n}',name));
   }else if(currentType==='credit'){
     const name=text('fName'),total=num('fTotal'),paid=Math.min(num('fPaid'),total);
     if(!name||total<=0){shake();return;}
-    credits.push({name,total,paid,icon:'credit',id:uid()});
+    credits.push({name,total,paid,icon:'credit',emoji:text('fEmoji2')||null,id:uid()});
     renderCredits();
     notify(tf('Долг «{n}» добавлен','{n}',name));
   }else if(currentType==='sub'){
     const name=text('fName'),amt=num('fAmount2');
     if(!name||amt<=0){shake();return;}
-    subs.push({name,amount:amt,id:uid()});
+    subs.push({name,amount:amt,emoji:text('fEmoji2')||null,id:uid()});
     renderSubs();
     notify(tf('Подписка «{n}» добавлена','{n}',name));
   }
@@ -1261,9 +1262,9 @@ settingsScreen.addEventListener('click',function(e){
 /* ===== backup ===== */
 function snapshotData(){
   return {balance:balance,monthDelta:monthDelta,monthIncome:monthIncome,
-    goals:goals.map(function(g){return {name:g.name,target:g.target,saved:g.saved,icon:g.icon,paused:!!g.paused};}),
-    credits:credits.map(function(c){return {name:c.name,total:c.total,paid:c.paid,icon:c.icon};}),
-    subs:subs.map(function(s){return {name:s.name,amount:s.amount};}),
+    goals:goals.map(function(g){return {name:g.name,target:g.target,saved:g.saved,icon:g.icon,emoji:g.emoji||null,paused:!!g.paused};}),
+    credits:credits.map(function(c){return {name:c.name,total:c.total,paid:c.paid,icon:c.icon,emoji:c.emoji||null};}),
+    subs:subs.map(function(s){return {name:s.name,amount:s.amount,emoji:s.emoji||null};}),
     sources:sources.map(function(s){return {name:s.name,amount:s.amount};}),
     transactions:transactions.map(function(t){return {type:t.type,amount:t.amount,label:t.label,ts:t.ts,emoji:t.emoji||null};})};
 }
@@ -1272,9 +1273,9 @@ function applySnapshot(d){
   const nm=function(x){return Number.isFinite(+x)?+x:0;};
   if(!Array.isArray(d.goals)&&!Array.isArray(d.credits)&&!Array.isArray(d.sources)&&!('balance' in d))throw new Error('empty');
   balance=nm(d.balance);monthDelta=nm(d.monthDelta);monthIncome=nm(d.monthIncome);
-  goals.splice.apply(goals,[0,goals.length].concat((d.goals||[]).map(function(g){return {name:String(g.name||'Цель'),target:Math.max(1,nm(g.target)),saved:nm(g.saved),icon:ICONS[g.icon]?g.icon:'goal',paused:!!g.paused,id:uid()};})));
-  credits.splice.apply(credits,[0,credits.length].concat((d.credits||[]).map(function(c){return {name:String(c.name||'Кредит'),total:Math.max(1,nm(c.total)),paid:nm(c.paid),icon:ICONS[c.icon]?c.icon:'credit',id:uid()};})));
-  subs.splice.apply(subs,[0,subs.length].concat((d.subs||[]).map(function(s){return {name:String(s.name||'Подписка'),amount:nm(s.amount),id:uid()};})));
+  goals.splice.apply(goals,[0,goals.length].concat((d.goals||[]).map(function(g){return {name:String(g.name||'Цель'),target:Math.max(1,nm(g.target)),saved:nm(g.saved),icon:ICONS[g.icon]?g.icon:'goal',emoji:g.emoji||null,paused:!!g.paused,id:uid()};})));
+  credits.splice.apply(credits,[0,credits.length].concat((d.credits||[]).map(function(c){return {name:String(c.name||'Кредит'),total:Math.max(1,nm(c.total)),paid:nm(c.paid),icon:ICONS[c.icon]?c.icon:'credit',emoji:c.emoji||null,id:uid()};})));
+  subs.splice.apply(subs,[0,subs.length].concat((d.subs||[]).map(function(s){return {name:String(s.name||'Подписка'),amount:nm(s.amount),emoji:s.emoji||null,id:uid()};})));
   sources.splice.apply(sources,[0,sources.length].concat((d.sources||[]).map(function(s){return {name:String(s.name||'Другое'),amount:nm(s.amount),id:uid()};})));
   transactions.splice.apply(transactions,[0,transactions.length].concat((d.transactions||[]).map(function(t){return {type:t.type==='expense'?'expense':'income',amount:nm(t.amount),label:String(t.label||''),ts:nm(t.ts)||Date.now(),id:uid(),emoji:t.emoji||null};})));
   renderReport();
