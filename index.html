@@ -398,6 +398,10 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     </div>
   </main>
 
+  <main id="view-goals" class="view">
+    <div class="section-header"><h2>Цели</h2></div>
+  </main>
+
   <nav class="tabbar glass">
     <div class="tab-pill" id="tabPill"></div>
     <button class="tab active" data-view="home">
@@ -407,7 +411,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
         <path fill="currentColor" fill-rule="evenodd" d="M14 7.2 22.6 14.3v9.1c0 1.1-.9 2-2 2H7.4c-1.1 0-2-.9-2-2v-9.1L14 7.2Zm-2.6 18.2h5.2v-7.1c0-.5-.4-.9-.9-.9h-3.4c-.5 0-.9.4-.9.9v7.1Z"/>
       </svg>
     </button>
-    <button class="tab" id="goalsTab" aria-label="Цели">
+    <button class="tab" id="goalsTab" data-view="goals" aria-label="Цели">
       <svg width="27" height="27" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="14" cy="14" r="10.4"/><circle cx="14" cy="14" r="6.2"/><circle cx="14" cy="14" r="2" fill="currentColor" stroke="none"/></svg>
     </button>
     <button class="fab" id="fab" aria-label="Добавить">
@@ -962,7 +966,7 @@ attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Тра
 }});
 
 const tabs=document.querySelectorAll('.tab[data-view]');
-const views={home:document.getElementById('view-home'),stats:document.getElementById('view-stats')};
+const views={home:document.getElementById('view-home'),stats:document.getElementById('view-stats'),goals:document.getElementById('view-goals')};
 let _pillGlassTimer=null;
 function moveTabPill(el){
   const pill=document.getElementById('tabPill');
@@ -975,19 +979,10 @@ tabs.forEach(t=>t.addEventListener('click',()=>{
   tabs.forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
   document.getElementById('settingsTab').classList.remove('active');
-  document.getElementById('goalsTab').classList.remove('active');
   Object.values(views).forEach(v=>v.classList.remove('active'));
   views[t.dataset.view].classList.add('active');
   moveTabPill(t);
 }));
-document.getElementById('goalsTab').addEventListener('click',function(){
-  buzz('light');
-  tabs.forEach(x=>x.classList.remove('active'));
-  document.getElementById('settingsTab').classList.remove('active');
-  this.classList.add('active');
-  moveTabPill(this);
-  openDetail('Цели');
-});
 requestAnimationFrame(function(){
   const pill=document.getElementById('tabPill');
   if(pill)pill.style.transition='none';
