@@ -934,7 +934,7 @@ function unlockScroll(){document.body.style.overflow='';}
     dragging=false;
     ds.style.transition='';
     const dx=Math.max(0,e.clientX-sx);
-    if(locked&&(dx>w*.2||v>500)){
+    if(locked&&(dx>Math.min(70,w*.1)||v>250)){
       ds.style.transform='';
       closeDetail();
     }else{
