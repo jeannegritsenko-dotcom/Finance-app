@@ -137,8 +137,8 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8;}
 .view.dimmed .empty-emoji{opacity:.32;transition:opacity .25s;}
 .backdrop.open{opacity:1;pointer-events:auto;}
-.sheet{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;border-radius:28px 28px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);z-index:9;max-height:80vh;overflow-y:auto;background:var(--sheet-bg) !important;backdrop-filter:blur(18px) saturate(200%);-webkit-backdrop-filter:blur(18px) saturate(200%);box-shadow:0 -8px 40px rgba(0,0,0,.3);}
-.sheet.open{transform:translateY(0);}
+.sheet{position:fixed;inset:0;max-width:480px;margin:0 auto;padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);z-index:9;overflow-y:auto;background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%) !important;box-shadow:none;}
+.sheet.open{transform:translateX(0);}
 .sheet-handle{width:36px;height:5px;border-radius:999px;background:var(--handle);margin:6px auto 16px;}
 .sheet-title-row{display:flex;align-items:center;gap:6px;margin-bottom:16px;}
 .back-btn{background:none;border:none;color:var(--dim);font-size:24px;line-height:1;cursor:pointer;padding:0 6px 2px 0;}
@@ -440,10 +440,10 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     <button class="ctx-item" id="ctxPause"><svg class="ctx-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9.3"/><path d="M10 9v6M14 9v6"/></svg><span class="ctx-lbl">Приостановить цель</span><svg class="ctx-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></button>
   </div>
   <div class="sheet glass" id="sheet">
-    <div class="sheet-handle"></div>
     <div class="sheet-title-row">
       <button class="back-btn" id="backBtn" style="display:none" onclick="showGrid()">‹</button>
       <div class="sheet-title" id="sheetTitle">Добавить</div>
+      <button class="back-btn" id="sheetCloseBtn" onclick="closeSheet()" style="margin-left:auto;">✕</button>
     </div>
     <div class="sheet-grid" id="sheetGrid">
       <button class="sheet-opt" data-type="income">
