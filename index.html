@@ -399,7 +399,8 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </main>
 
   <main id="view-goals" class="view">
-    <div class="section-header"><h2>Цели</h2></div>
+    <div style="padding-top:20px;"></div>
+    <div class="empty-card glass"><div class="empty-emoji">🛠️</div><div class="empty-title">Этот экран пока в разработке</div><div class="empty-sub">Скоро здесь появится содержимое</div></div>
   </main>
 
   <nav class="tabbar glass">
@@ -982,6 +983,7 @@ tabs.forEach(t=>t.addEventListener('click',()=>{
   Object.values(views).forEach(v=>v.classList.remove('active'));
   views[t.dataset.view].classList.add('active');
   moveTabPill(t);
+  document.querySelector('.topbar').style.display=t.dataset.view==='goals'?'none':'';
 }));
 requestAnimationFrame(function(){
   const pill=document.getElementById('tabPill');
