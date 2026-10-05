@@ -191,7 +191,7 @@ input[type=number]{-moz-appearance:textfield;}
 .empty-card{cursor:pointer;transition:transform .15s;}
 .empty-card:active{transform:scale(.98);}
 .settings-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:20;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow:hidden;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);}
-.detail-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:4;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow-y:auto;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);padding:14px 20px 118px;}
+.detail-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:4;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow-y:auto;touch-action:pan-y;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);padding:14px 20px 118px;}
 .detail-screen.open{transform:translateX(0);}
 .settings-screen.open{transform:translateX(0);}
 .spage{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);transition:transform .34s cubic-bezier(.32,.72,0,1),opacity .34s ease;padding-bottom:56px;}
@@ -336,10 +336,10 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   <main id="view-home" class="view active">
     <div class="balance-card glass">
       <div class="balance-label">Баланс</div>
-      <div class="balance-amount" id="balanceAmount">₽128 450</div>
+      <div class="balance-amount" id="balanceAmount">0 ₽</div>
       <div class="balance-sub" id="subLine">
         <svg id="subArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-        <span id="subText">+8 200 ₽ за месяц</span>
+        <span id="subText">+0 ₽ за месяц</span>
       </div>
       <div class="quick-actions" id="quickActions">
         <button class="pill" onclick="openForm('income')">
@@ -378,8 +378,8 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     <div class="stats-summary glass">
       <div class="balance-label">Доход в этом месяце</div>
       <div class="stats-row">
-        <span class="stats-amount" id="statsAmount">₽96 500</span>
-        <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="deltaText">+12%</span></span>
+        <span class="stats-amount" id="statsAmount">0 ₽</span>
+        <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="deltaText">+0%</span></span>
       </div>
     </div>
     <div class="chart-card glass">
@@ -908,29 +908,33 @@ function unlockScroll(){document.body.style.overflow='';}
 (function(){
   const ds=document.getElementById('detailScreen');
   let sx=0,sy=0,dragging=false,locked=false,pid=null,w=0;
+  let lt=0,lx=0,v=0;
   ds.addEventListener('pointerdown',function(e){
     if(!ds.classList.contains('open'))return;
-    if(e.clientX>28)return;
+    if(e.clientX>60)return;
     sx=e.clientX;sy=e.clientY;dragging=true;locked=false;pid=e.pointerId;w=ds.offsetWidth;
+    lt=performance.now();lx=e.clientX;v=0;
     ds.style.transition='none';
-  });
+  },{passive:true});
   ds.addEventListener('pointermove',function(e){
     if(!dragging||e.pointerId!==pid)return;
     const dx=e.clientX-sx,dy=e.clientY-sy;
     if(!locked){
-      if(Math.abs(dx)<6&&Math.abs(dy)<6)return;
+      if(Math.abs(dx)<4&&Math.abs(dy)<4)return;
       if(Math.abs(dy)>Math.abs(dx)){dragging=false;return;}
       locked=true;try{ds.setPointerCapture(pid);}catch(_){}
     }
+    const now=performance.now(),dt=Math.max(1,now-lt);
+    v=v*.6+((e.clientX-lx)/dt*1000)*.4;lx=e.clientX;lt=now;
     const r=Math.max(0,dx);
     ds.style.transform='translateX('+r+'px)';
-  });
+  },{passive:true});
   function endDrag(e){
     if(!dragging||e.pointerId!==pid)return;
     dragging=false;
     ds.style.transition='';
     const dx=Math.max(0,e.clientX-sx);
-    if(locked&&dx>w*.3){
+    if(locked&&(dx>w*.2||v>500)){
       ds.style.transform='';
       closeDetail();
     }else{
