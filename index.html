@@ -430,8 +430,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 
   <div class="backdrop" id="backdrop" onclick="closeSheet()"></div>
   <div class="detail-screen" id="detailScreen">
-    <div class="sp-top"><button class="sp-back" onclick="closeDetail()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Назад</button></div>
-    <h1 class="sp-title" id="detailTitle"></h1>
+    <h1 class="sp-title" id="detailTitle" style="margin-top:20px;"></h1>
     <div class="settings-body"></div>
   </div>
   <div class="ctx-backdrop" id="ctxBackdrop"></div>
@@ -906,6 +905,41 @@ function closeDetail(){
 }
 function lockScroll(){document.body.style.overflow='hidden';}
 function unlockScroll(){document.body.style.overflow='';}
+(function(){
+  const ds=document.getElementById('detailScreen');
+  let sx=0,sy=0,dragging=false,locked=false,pid=null,w=0;
+  ds.addEventListener('pointerdown',function(e){
+    if(!ds.classList.contains('open'))return;
+    if(e.clientX>28)return;
+    sx=e.clientX;sy=e.clientY;dragging=true;locked=false;pid=e.pointerId;w=ds.offsetWidth;
+    ds.style.transition='none';
+  });
+  ds.addEventListener('pointermove',function(e){
+    if(!dragging||e.pointerId!==pid)return;
+    const dx=e.clientX-sx,dy=e.clientY-sy;
+    if(!locked){
+      if(Math.abs(dx)<6&&Math.abs(dy)<6)return;
+      if(Math.abs(dy)>Math.abs(dx)){dragging=false;return;}
+      locked=true;try{ds.setPointerCapture(pid);}catch(_){}
+    }
+    const r=Math.max(0,dx);
+    ds.style.transform='translateX('+r+'px)';
+  });
+  function endDrag(e){
+    if(!dragging||e.pointerId!==pid)return;
+    dragging=false;
+    ds.style.transition='';
+    const dx=Math.max(0,e.clientX-sx);
+    if(locked&&dx>w*.3){
+      ds.style.transform='';
+      closeDetail();
+    }else{
+      ds.style.transform='';
+    }
+  }
+  ds.addEventListener('pointerup',endDrag);
+  ds.addEventListener('pointercancel',endDrag);
+})();
 function openGoalMenu(row){
   const goal=goals.find(function(g){return String(g.id)===row.dataset.id;});
   if(!goal)return;
