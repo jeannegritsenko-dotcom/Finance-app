@@ -1104,8 +1104,8 @@ function fieldsHTML(type){
 }
 function showGrid(){currentType=null;sheetTitle.textContent=tr('Добавить');backBtn.style.display='none';sheetGrid.style.display='grid';sheetForm.style.display='none';}
 function showForm(type){currentType=type;sheetTitle.textContent=tr(TITLES[type]);backBtn.style.display='inline-block';sheetGrid.style.display='none';formFields.innerHTML=fieldsHTML(type);sheetForm.style.display='block';}
-function openSheet(){sheet.classList.add('open');backdrop.classList.add('open');document.querySelectorAll('.view.active').forEach(function(v){v.classList.add('dimmed');});}
-function openForm(type){openSheet();showForm(type);}
+function openSheet(){/* ВРЕМЕННО ОТКЛЮЧЕНО по просьбе: плюсик, кнопки Доход/Расход и пустые карточки Цели/Задолженности/Подписок пока ничего не открывают */}
+function openForm(type){/* ВРЕМЕННО ОТКЛЮЧЕНО, см. openSheet() выше */}
 function closeSheet(){sheet.classList.remove('open');backdrop.classList.remove('open');document.querySelectorAll('.view').forEach(function(v){v.classList.remove('dimmed');});setTimeout(showGrid,300);}
 function notify(msg){buzz('light');toast.textContent=tr(msg);toast.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>toast.classList.remove('show'),1800);}
 function shake(){formFields.classList.add('shake');setTimeout(()=>formFields.classList.remove('shake'),400);}
