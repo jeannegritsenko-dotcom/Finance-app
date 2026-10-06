@@ -506,7 +506,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     <div class="spage sub" id="sp-home"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
       <h1 class="sp-title">Главный экран</h1>
-      <div class="settings-body"><div class="settings-section"><div class="settings-group-title">Что показывать</div><div class="settings-group glass"><div class="settings-row "><div class="sr-t">Изменение за месяц<small>Строка под балансом</small></div><button class="switch" data-key="homeDelta" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Последние транзакции</div><button class="switch" data-key="homeRecent" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Кнопки «Доход» и «Расход»</div><button class="switch" data-key="homeQuick" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Цели</div><button class="switch" data-key="homeGoals" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Задолженности<small>Скройте, если их нет</small></div><button class="switch" data-key="showCredits" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Регулярные платежи</div><button class="switch" data-key="homeSubs" role="switch" aria-checked="false"><span class="knob"></span></button></div></div><div class="sg-foot">Скрытые разделы не удаляются — данные остаются на месте.</div></div><div class="settings-section"><div class="settings-group-title">Порядок разделов</div><div class="settings-group glass" id="orderList"></div><div class="sg-foot">Стрелками можно менять порядок целей, задолженностей и регулярных платежей на главном экране.</div></div></div>
+      <div class="settings-body"><div class="settings-section"><div class="settings-group-title">Что показывать</div><div class="settings-group glass"><div class="settings-row "><div class="sr-t">Изменение за месяц<small>Строка под балансом</small></div><button class="switch" data-key="homeDelta" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Последние транзакции</div><button class="switch" data-key="homeRecent" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Кнопки «Доход» и «Расход»</div><button class="switch" data-key="homeQuick" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Цели</div><button class="switch" data-key="homeGoals" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Задолженности<small>Скройте, если их нет</small></div><button class="switch" data-key="showCredits" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Регулярные платежи</div><button class="switch" data-key="homeSubs" role="switch" aria-checked="false"><span class="knob"></span></button></div></div><div class="sg-foot">Скрытые разделы не удаляются — данные остаются на месте.</div></div><div class="settings-section"><div class="settings-group-title">Порядок разделов</div><div class="settings-group glass" id="orderList"></div><div class="sg-foot">Стрелками можно менять порядок последних транзакций, целей, задолженностей и регулярных платежей на главном экране.</div></div></div>
     </div>
     <div class="spage sub" id="sp-notify"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
@@ -589,7 +589,7 @@ let sources=[];
 let _uid=1;const uid=()=>_uid++;
 [goals,credits,sources,subs].forEach(function(a){a.forEach(function(o){o.id=uid();});});
 const $=id=>document.getElementById(id);
-const DEF={theme:'dark',showCredits:true,hideBalance:false,homeGoals:true,homeQuick:true,homeDelta:true,homeSubs:true,homeRecent:true,sectionOrder:['subs','goals','credits'],compact:false,currency:'RUB',nCredit:true,nDays:3,nGoals:true,nReport:false,nDaily:false,pinHash:null,bio:false,lockAfter:1,lang:'ru',anim:true,vibration:true,showBalanceNotif:true,notifyTime:1200};
+const DEF={theme:'dark',showCredits:true,hideBalance:false,homeGoals:true,homeQuick:true,homeDelta:true,homeSubs:true,homeRecent:true,sectionOrder:['recent','subs','goals','credits'],compact:false,currency:'RUB',nCredit:true,nDays:3,nGoals:true,nReport:false,nDaily:false,pinHash:null,bio:false,lockAfter:1,lang:'ru',anim:true,vibration:true,showBalanceNotif:true,notifyTime:1200};
 let settings=Object.assign({},DEF);
 let _savedRaw={};
 try{_savedRaw=JSON.parse(localStorage.getItem('financeSettings')||'{}');}catch(e){}
@@ -1289,10 +1289,10 @@ $('reportPeriod').addEventListener('click',function(e){
   $('reportPeriod').querySelectorAll('.seg-btn').forEach(function(x){x.classList.toggle('active',x===b);});
   renderReport();buzz('select');
 });
-const SECTION_LABELS={subs:'Регулярные платежи',goals:'Цели',credits:'Задолженности'};
-const SECTION_EL={subs:'subsSection',goals:'goalsSection',credits:'creditsSection'};
+const SECTION_LABELS={recent:'Последние транзакции',subs:'Регулярные платежи',goals:'Цели',credits:'Задолженности'};
+const SECTION_EL={recent:'recentSection',subs:'subsSection',goals:'goalsSection',credits:'creditsSection'};
 function renderOrderList(){
-  const arr=settings.sectionOrder||['subs','goals','credits'];
+  const arr=settings.sectionOrder||['recent','subs','goals','credits'];
   $('orderList').innerHTML=arr.map(function(key,i){
     return '<div class="order-row" data-key="'+key+'"><span class="sr-t">'+tr(SECTION_LABELS[key])+'</span><div class="order-btns">'+
       '<button class="order-btn" data-dir="up"'+(i===0?' disabled':'')+'><svg viewBox="0 0 24 24"><use href="#i-chev-up"/></svg></button>'+
@@ -1302,7 +1302,7 @@ function renderOrderList(){
 }
 function applySectionOrder(){
   const parent=document.getElementById('view-home');
-  (settings.sectionOrder||['subs','goals','credits']).forEach(function(key){
+  (settings.sectionOrder||['recent','subs','goals','credits']).forEach(function(key){
     const el=document.getElementById(SECTION_EL[key]);
     if(el)parent.appendChild(el);
   });
@@ -1311,7 +1311,7 @@ $('orderList').addEventListener('click',function(e){
   const btn=e.target.closest('.order-btn');
   if(!btn||btn.disabled)return;
   const row=btn.closest('.order-row'),key=row.dataset.key;
-  const arr=(settings.sectionOrder||['subs','goals','credits']).slice();
+  const arr=(settings.sectionOrder||['recent','subs','goals','credits']).slice();
   const i=arr.indexOf(key),j=btn.dataset.dir==='up'?i-1:i+1;
   if(j<0||j>=arr.length)return;
   const tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;
