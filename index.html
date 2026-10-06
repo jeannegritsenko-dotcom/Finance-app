@@ -338,7 +338,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   <main id="view-home" class="view active">
     <div class="balance-card glass">
       <div class="balance-label">Баланс</div>
-      <div class="balance-amount" id="balanceAmount">0 ₽</div>
+      <div class="balance-amount" id="balanceAmount" style="visibility:hidden">0 ₽</div>
       <div class="balance-sub" id="subLine">
         <svg id="subArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
         <span id="subText">+0 ₽ за месяц</span>
@@ -378,7 +378,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     <div class="stats-summary glass">
       <div class="balance-label">Доход в этом месяце</div>
       <div class="stats-row">
-        <span class="stats-amount" id="statsAmount">0 ₽</span>
+        <span class="stats-amount" id="statsAmount" style="visibility:hidden">0 ₽</span>
         <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="deltaText">+0%</span></span>
       </div>
     </div>
@@ -598,6 +598,9 @@ if(!('theme' in _savedRaw)){
   if(tgc==='light')settings.theme='light';
 }
 Object.assign(settings,_savedRaw);
+if(Array.isArray(settings.sectionOrder)&&!settings.sectionOrder.includes('recent')){
+  settings.sectionOrder=['recent'].concat(settings.sectionOrder);
+}
 function saveSettings(){try{localStorage.setItem('financeSettings',JSON.stringify(settings));}catch(e){}}
 function applyTheme(){
   document.documentElement.setAttribute('data-appearance',settings.theme==='light'?'light':'dark');
@@ -659,7 +662,9 @@ const fmt=n=>Math.round(n).toLocaleString('ru-RU');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function renderBalance(){saveData();
-  document.getElementById('balanceAmount').textContent=settings.hideBalance?'••••••':money(balance);
+  const balEl=document.getElementById('balanceAmount');
+  balEl.textContent=settings.hideBalance?'••••••':money(balance);
+  balEl.style.visibility='';
   const neg=monthDelta<0;
   document.getElementById('subText').textContent=(neg?'−':'+')+money(Math.abs(monthDelta))+' '+tr('за месяц');
   document.getElementById('subArrow').classList.toggle('down',neg);
@@ -729,7 +734,9 @@ function renderStats(){
   const now=new Date(),y=now.getFullYear(),m=now.getMonth();
   const cur=monthIncomeSum(y,m);
   const prevD=new Date(y,m-1,1),prev=monthIncomeSum(prevD.getFullYear(),prevD.getMonth());
-  document.getElementById('statsAmount').textContent=settings.hideBalance?'••••••':money(cur);
+  const statsEl=document.getElementById('statsAmount');
+  statsEl.textContent=settings.hideBalance?'••••••':money(cur);
+  statsEl.style.visibility='';
   const deltaEl=document.getElementById('deltaText').parentElement;
   if(prev>0){
     const pct=Math.round((cur-prev)/prev*100);
