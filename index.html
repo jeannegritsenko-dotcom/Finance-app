@@ -823,8 +823,8 @@ function renderStats(){
   }
   let drag=false;
   svg.style.touchAction='pan-y';svg.style.cursor='pointer';
-  svg.addEventListener('pointerdown',function(e){drag=true;try{svg.setPointerCapture(e.pointerId);}catch(_){}select(idxAt(e.clientX));});
-  svg.addEventListener('pointermove',function(e){if(drag||e.pointerType==='mouse'&&e.buttons)select(idxAt(e.clientX));});
+  svg.addEventListener('pointerdown',function(e){drag=true;try{svg.setPointerCapture(e.pointerId);}catch(_){}select(idxAt(e.clientX),true);});
+  svg.addEventListener('pointermove',function(e){if(drag||e.pointerType==='mouse'&&e.buttons)select(idxAt(e.clientX),true);});
   svg.addEventListener('pointerup',function(){drag=false;});
   svg.addEventListener('pointercancel',function(){drag=false;});
   spans.forEach(function(sp){sp.addEventListener('click',function(){select(+sp.dataset.i);});});
