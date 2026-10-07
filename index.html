@@ -1704,7 +1704,7 @@ if(settings.pinHash)pinOpen('unlock');
   function applyTgTop(){
     try{
       const content=(tg.contentSafeAreaInset&&tg.contentSafeAreaInset.top)||0;
-      const px=tg.isFullscreen?Math.max(content,0):0;
+      const px=tg.isFullscreen?Math.max(content-16,0):0;
       document.documentElement.style.setProperty('--tg-top',px+'px');
     }catch(e){}
   }
