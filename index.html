@@ -262,9 +262,22 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 .tgback .sp-back{display:none;}
 .tgback .sp-top{padding:calc(var(--tg-top) + var(--tg-top-extra) + 14px) 12px 0;}
 .pin.bioonly .pin-dots,.pin.bioonly .keypad{display:none;}
-.pin-face{display:none;width:92px;height:92px;margin-top:10px;}
-.pin-face svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:1.5;}
-.pin.bioonly .pin-face{display:flex;}
+.pin-aurora{display:none;position:absolute;inset:0;overflow:hidden;z-index:-1;pointer-events:none;}
+.pin-aurora i{position:absolute;border-radius:50%;filter:blur(46px);opacity:.75;}
+.pa1{width:72vw;height:72vw;left:-12vw;top:20vh;background:#4b5cff;animation:paDrift1 7s ease-in-out infinite;}
+.pa2{width:66vw;height:66vw;right:-16vw;top:34vh;background:#b04dff;animation:paDrift2 8s ease-in-out infinite;}
+.pa3{width:60vw;height:60vw;left:20vw;top:48vh;background:#19c3d6;animation:paDrift3 9s ease-in-out infinite;}
+@keyframes paDrift1{50%{transform:translate(50px,60px)}}
+@keyframes paDrift2{50%{transform:translate(-60px,40px)}}
+@keyframes paDrift3{50%{transform:translate(40px,-70px)}}
+.pin.bioonly{background:#000;color:#f5f5f7;}
+.pin.bioonly .pin-aurora{display:block;}
+.pin-face{display:none;width:112px;height:112px;margin:0;padding:0;}
+.pin-face svg{width:52px;height:52px;fill:none;stroke:currentColor;stroke-width:1.5;}
+.pin.bioonly .pin-face{display:flex;order:-3;color:#fff;border:1.5px solid rgba(255,255,255,.55);background:rgba(0,0,0,.35);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.pin.bioonly .pin-title{order:-2;margin-top:28px;}
+.pin.bioonly .pin-sub{order:-1;margin:8px 0 0;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.6);}
+.pin.bioonly .pin-link{position:absolute;bottom:calc(54px + env(safe-area-inset-bottom,0px));margin:0;color:rgba(255,255,255,.75);text-shadow:0 1px 8px rgba(0,0,0,.6);}
 .pin-link{margin-top:30px;background:none;border:none;color:var(--dim);font-size:15px;font-family:inherit;cursor:pointer;padding:8px 12px;}
 [data-anim="off"] *,[data-anim="off"] *::before,[data-anim="off"] *::after{transition-duration:.001ms!important;animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;}
 [data-anim="off"] .live-emoji{animation-duration:1.6s!important;animation-iteration-count:infinite!important;}
@@ -591,7 +604,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     </div>
   </div>
 
-  <div class="pin" id="pin"><div class="pin-title" id="pinTitle"></div><div class="pin-sub" id="pinSub"></div><div class="pin-dots" id="pinDots"><i></i><i></i><i></i><i></i></div><div class="keypad" id="keypad"></div><button class="key pin-face" id="pinFace"><svg viewBox="0 0 24 24"><use href="#i-face"/></svg></button><button class="pin-link" id="pinLink"></button></div>
+  <div class="pin" id="pin"><div class="pin-aurora"><i class="pa1"></i><i class="pa2"></i><i class="pa3"></i></div><div class="pin-title" id="pinTitle"></div><div class="pin-sub" id="pinSub"></div><div class="pin-dots" id="pinDots"><i></i><i></i><i></i><i></i></div><div class="keypad" id="keypad"></div><button class="key pin-face" id="pinFace"><svg viewBox="0 0 24 24"><use href="#i-face"/></svg></button><button class="pin-link" id="pinLink"></button></div>
 </div>
 
 <script>
