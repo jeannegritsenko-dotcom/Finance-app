@@ -41,6 +41,7 @@
   --money-neg:#ff453a;
   --input-bg:rgba(255,255,255,.05);
   --focus-border:rgba(255,255,255,.32);
+  --tg-top:0px;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
@@ -81,7 +82,7 @@ html,body{height:100%;}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;background:var(--page3);color:var(--text);transition:background .3s,color .3s;}
 .app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;overflow-x:hidden;background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);transition:background .3s;}
 .glow{position:absolute;top:-90px;left:50%;transform:translateX(-50%);width:340px;height:220px;background:var(--glow-c);border-radius:50%;filter:blur(75px);pointer-events:none;z-index:0;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 4px;position:relative;z-index:1;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:calc(18px + var(--tg-top)) 20px 4px;position:relative;z-index:1;transition:padding-top .2s;}
 .topbar-title{font-size:28px;font-weight:800;letter-spacing:-.3px;}
 .icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--glass-border);background:var(--glass);display:flex;align-items:center;justify-content:center;color:var(--dim);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);cursor:pointer;}
 .view{display:none;padding:14px 16px 118px;position:relative;z-index:1;}
@@ -144,7 +145,7 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hel
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8;}
 .view.dimmed .empty-emoji{opacity:.32;transition:opacity .25s;}
 .backdrop.open{opacity:1;pointer-events:auto;}
-.sheet{position:fixed;inset:0;max-width:480px;margin:0 auto;padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);z-index:9;overflow-y:auto;background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%) !important;box-shadow:none;}
+.sheet{position:fixed;inset:0;max-width:480px;margin:0 auto;padding:calc(20px + var(--tg-top)) 20px calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);z-index:9;overflow-y:auto;background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%) !important;box-shadow:none;}
 .sheet.open{transform:translateX(0);}
 .sheet-handle{width:36px;height:5px;border-radius:999px;background:var(--handle);margin:6px auto 16px;}
 .sheet-title-row{display:flex;align-items:center;gap:6px;margin-bottom:16px;}
@@ -200,14 +201,14 @@ input[type=number]{-moz-appearance:textfield;}
 .empty-card{cursor:pointer;transition:transform .15s;}
 .empty-card:active{transform:scale(.98);}
 .settings-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:20;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow:hidden;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);}
-.detail-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:4;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow-y:auto;touch-action:pan-y;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);padding:14px 20px 118px;}
+.detail-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:4;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow-y:auto;touch-action:pan-y;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);padding:calc(14px + var(--tg-top)) 20px 118px;}
 .detail-screen.open{transform:translateX(0);}
 .settings-screen.open{transform:translateX(0);}
 .spage{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);transition:transform .34s cubic-bezier(.32,.72,0,1),opacity .34s ease;padding-bottom:56px;}
 .spage.sub{transform:translateX(100%);z-index:2;}
 .spage.sub.show{transform:translateX(0);box-shadow:-16px 0 40px rgba(0,0,0,.28);}
 #sp-root.pushed,.spage.sub.pushed{transform:translateX(-26%);opacity:.5;}
-.sp-top{display:flex;align-items:center;padding:16px 12px 0;position:relative;z-index:1;}
+.sp-top{display:flex;align-items:center;padding:calc(16px + var(--tg-top)) 12px 0;position:relative;z-index:1;transition:padding-top .2s;}
 .sp-back{display:flex;align-items:center;background:none;border:none;color:var(--text);font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;padding:6px 10px 6px 4px;}
 .sp-back svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
 .sp-title{position:relative;z-index:1;font-size:32px;font-weight:800;letter-spacing:-.7px;margin:6px 20px 18px;}
@@ -437,7 +438,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 
   <div class="backdrop" id="backdrop" onclick="closeSheet()"></div>
   <div class="detail-screen" id="detailScreen">
-    <h1 class="sp-title" id="detailTitle" style="margin-top:20px;"></h1>
+    <h1 class="sp-title" id="detailTitle" style="margin-top:calc(20px + var(--tg-top));transition:margin-top .2s;"></h1>
     <div class="settings-body"></div>
   </div>
   <div class="ctx-backdrop" id="ctxBackdrop"></div>
@@ -483,7 +484,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 
   <div class="settings-screen" id="settingsScreen">
     <div class="spage" id="sp-root"><div class="glow"></div>
-      <h1 class="sp-title" style="margin-top:20px;">Настройки</h1>
+      <h1 class="sp-title" style="margin-top:calc(20px + var(--tg-top));transition:margin-top .2s;">Настройки</h1>
       <div class="settings-body"><div class="settings-group glass"><div class="nav-row" data-go="appearance"><span class="nav-ic"><svg viewBox="0 0 24 24"><use href="#i-moon"/></svg></span><span class="nav-lbl">Оформление</span><span class="nav-val" id="val-appearance"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row" data-go="currency"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.4v-1A3.2 3.2 0 0 0 17.8 7.2H6.2A3.2 3.2 0 0 0 3 10.4v7.6a3.2 3.2 0 0 0 3.2 3.2h11.6A3.2 3.2 0 0 0 21 18v-2"/><path d="M6.2 7.2 17.3 3.8c1.5-.4 2.9.6 2.9 2.2v2.3"/><rect x="15.4" y="11.4" width="7" height="4.6" rx="1.9"/></svg></span><span class="nav-lbl">Валюта</span><span class="nav-val" id="val-currency"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row" data-go="lang"><span class="nav-ic"><svg viewBox="0 0 24 24"><use href="#i-globe"/></svg></span><span class="nav-lbl">Язык</span><span class="nav-val" id="val-lang"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row" data-go="home"><span class="nav-ic"><svg viewBox="0 0 24 24"><use href="#i-layout"/></svg></span><span class="nav-lbl">Главный экран</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row" data-go="notify"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 14.2v-3.4a5.5 5.5 0 0 1 11 0v3.4c0 1 .4 1.7 1 2.3l1.2 1.4c.5.6.1 1-.7 1H5c-.8 0-1.2-.4-.7-1l1.2-1.4c.6-.6 1-1.3 1-2.3z"/><path d="M9.5 19a2.5 2.5 0 0 0 5 0"/></svg></span><span class="nav-lbl">Уведомления</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row" data-go="security"><span class="nav-ic"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span><span class="nav-lbl">Безопасность</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row" data-go="data"><span class="nav-ic"><svg viewBox="0 0 24 24"><use href="#i-db"/></svg></span><span class="nav-lbl">Данные</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div>
         <div class="settings-group glass" style="margin-top:10px;">
           <div class="nav-row" onclick="notify('Скоро здесь можно будет задонатить звёздами')"><span id="supportLottie" style="width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"></span><div class="sr-t">Поддержать разработчика<small>Поддержать материально мою гениальность</small></div><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div>
@@ -1700,6 +1701,21 @@ if(settings.pinHash)pinOpen('unlock');
   const tg=window.Telegram&&window.Telegram.WebApp;
   if(!tg)return;
   try{tg.ready();tg.expand();tg.disableVerticalSwipes&&tg.disableVerticalSwipes();}catch(e){}
+  function applyTgTop(){
+    try{
+      const content=(tg.contentSafeAreaInset&&tg.contentSafeAreaInset.top)||0;
+      const safe=(tg.safeAreaInset&&tg.safeAreaInset.top)||0;
+      const px=Math.max(content,0)+(tg.isFullscreen?Math.max(safe,0):0);
+      document.documentElement.style.setProperty('--tg-top',px+'px');
+    }catch(e){}
+  }
+  applyTgTop();
+  try{
+    tg.onEvent&&tg.onEvent('contentSafeAreaChanged',applyTgTop);
+    tg.onEvent&&tg.onEvent('safeAreaChanged',applyTgTop);
+    tg.onEvent&&tg.onEvent('fullscreenChanged',applyTgTop);
+    tg.onEvent&&tg.onEvent('viewportChanged',applyTgTop);
+  }catch(e){}
 })();
 </script>
 </body>
