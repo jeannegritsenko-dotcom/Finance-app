@@ -259,6 +259,8 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 .key:active{transform:scale(.92);background:var(--glass);}
 .key.ghost{background:none;border-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;}
 .key svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.tgback .sp-back{display:none;}
+.tgback .sp-top{padding:calc(var(--tg-top) + var(--tg-top-extra) + 14px) 12px 0;}
 .pin.bioonly .pin-dots,.pin.bioonly .keypad{display:none;}
 .pin-face{display:none;width:92px;height:92px;margin-top:10px;}
 .pin-face svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:1.5;}
@@ -1759,6 +1761,7 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     }catch(e){}
   }
   applyTgTop();
+  try{if(tg.platform&&tg.platform!=='unknown'&&tg.BackButton&&tg.isVersionAtLeast&&tg.isVersionAtLeast('6.1'))document.documentElement.classList.add('tgback');}catch(e){}
   try{
     tg.onEvent&&tg.onEvent('contentSafeAreaChanged',applyTgTop);
     tg.onEvent&&tg.onEvent('safeAreaChanged',applyTgTop);
