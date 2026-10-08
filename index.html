@@ -313,24 +313,6 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 .recent-name{font-size:15px;font-weight:600;}
 .recent-date{font-size:12.5px;color:var(--dim2);margin-top:2px;}
 .recent-amount{font-size:16px;font-weight:700;white-space:nowrap;flex-shrink:0;}
-.tx-group{border-radius:24px;overflow:hidden;cursor:pointer;}
-.tx-item{display:flex;align-items:center;gap:12px;padding:12px 16px;}
-.tx-item+.tx-item{border-top:1px solid var(--hairline);}
-.tx-ico{width:40px;height:40px;border-radius:13px;background:var(--glass-strong);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
-.tx-info{flex:1;min-width:0;}.tx-name{font-size:15.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tx-date{font-size:12.5px;color:var(--dim2);margin-top:2px;}
-.tx-amt{font-size:16px;font-weight:700;white-space:nowrap;flex-shrink:0;}
-.see-all{background:none;border:none;color:var(--dim);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;padding:4px 2px;display:flex;align-items:center;gap:2px;}
-.see-all svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
-.hist-screen{position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:25;transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;color:var(--text);background:linear-gradient(180deg,var(--page1) 0%,var(--page2) 42%,var(--page3) 100%);padding-bottom:60px;}
-.hist-screen.open{transform:translateX(0);}
-.hist-body{padding:0 16px;}
-.hist-day{display:flex;justify-content:space-between;align-items:baseline;margin:18px 4px 8px;font-size:14px;font-weight:600;color:var(--dim);}
-.hist-day span:last-child{font-weight:500;font-size:13px;}
-.hist-row-wrap .row{margin-bottom:8px;}
-.hist-sum{display:flex;gap:10px;margin-bottom:14px;}
-.hist-sum div{flex:1;border-radius:20px;padding:12px 14px;}
-.hist-sum small{display:block;font-size:12.5px;color:var(--dim2);margin-bottom:3px;}.hist-sum b{font-size:17px;font-weight:800;}
 .emoji-row{display:flex;justify-content:center;margin-bottom:6px;}
 .emoji-input{width:60px;height:60px;border-radius:50%;border:1px solid var(--glass-border);background:var(--glass-strong);font-size:28px;text-align:center;padding:0;color:var(--text);font-family:inherit;caret-color:transparent;}
 .emoji-input::placeholder{opacity:.55;}
@@ -402,7 +384,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     </div>
 
     <div id="recentSection">
-      <div class="section-header"><h2>Последние транзакции</h2><button class="see-all" id="seeAll" style="display:none" onclick="openHist()">Все<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
+      <div class="section-header"><h2>Последние транзакции</h2></div>
       <div id="recentList"></div>
     </div>
 
@@ -480,11 +462,6 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   <div class="detail-screen" id="detailScreen">
     <h1 class="sp-title" id="detailTitle" style="margin-top:calc(20px + var(--tg-top) + var(--tg-top-extra,0px));transition:margin-top .2s;"></h1>
     <div class="settings-body"></div>
-  </div>
-  <div class="hist-screen" id="histScreen">
-    <div class="sp-top"><button class="sp-back" onclick="closeHist()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Назад</button></div>
-    <h1 class="sp-title">Все транзакции</h1>
-    <div class="hist-body"><div id="histSum"></div><div class="segmented" id="histFilter" style="margin-bottom:6px"><button class="seg-btn active" data-val="all">Все</button><button class="seg-btn" data-val="income">Доходы</button><button class="seg-btn" data-val="expense">Расходы</button></div><div id="histList" class="hist-row-wrap"></div></div>
   </div>
   <div class="ctx-backdrop" id="ctxBackdrop"></div>
   <div class="ctx-menu" id="ctxMenu">
@@ -768,64 +745,21 @@ function fmtDT(ts){
   const hh=String(d.getHours()).padStart(2,'0'),mm=String(d.getMinutes()).padStart(2,'0');
   return d.getDate()+' '+(lang==='en'?mon:mon.toLowerCase()+'.')+' • '+hh+':'+mm;
 }
-function relDay(ts){
-  const d=new Date(ts),n=new Date(),lang=settings.lang==='en'?'en':'ru';
-  const m0=function(x){return new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime();};
-  const diff=Math.round((m0(n)-m0(d))/864e5);
-  if(diff===0)return tr('Сегодня');
-  if(diff===1)return tr('Вчера');
-  const mon=MONTH_SHORT[lang][d.getMonth()];
-  return d.getDate()+' '+(lang==='en'?mon:mon.toLowerCase()+'.');
-}
-function txView(t){
-  const inc=t.type==='income';
-  return {sign:inc?'+':'−',color:inc?'var(--money-pos)':'var(--money-neg)',label:t.label&&t.label.trim()?tr(t.label):tr(inc?'Доход':'Расход'),emoji:t.emoji||(inc?'💰':'💸')};
-}
 function renderRecent(){
-  const el=$('recentList'),all=$('seeAll');
+  const el=$('recentList');
   if(!el)return;
-  if(all)all.style.display=transactions.length?'flex':'none';
   if(!transactions.length){
     el.innerHTML='<div class="empty-card glass"><div class="empty-emoji" id="recentLottie" style="width:56px;height:56px;margin:0 auto 4px;"></div><div class="empty-title">'+tr('Пока нет операций')+'</div><div class="empty-sub">'+tr('Здесь будут появляться ваши последние доходы и расходы')+'</div></div>';
     if(window.lottie)lottie.loadAnimation({container:document.getElementById('recentLottie'),renderer:'svg',loop:true,autoplay:true,animationData:RECENT_LOTTIE});
     return;
   }
-  const last=transactions.slice(-3).reverse();
-  el.innerHTML='<div class="glass tx-group" onclick="openHist()">'+last.map(function(t){
-    const v=txView(t);
-    return '<div class="tx-item"><div class="tx-ico">'+v.emoji+'</div><div class="tx-info"><div class="tx-name">'+esc(v.label)+'</div><div class="tx-date">'+relDay(t.ts)+'</div></div><span class="tx-amt" style="color:'+(t.type==='income'?v.color:'var(--text)')+'">'+v.sign+money(t.amount)+'</span></div>';
-  }).join('')+'</div>';
+  const t=transactions[transactions.length-1];
+  const sign=t.type==='income'?'+':'−',color=t.type==='income'?'var(--money-pos)':'var(--money-neg)';
+  const label=t.label&&t.label.trim()?tr(t.label):tr(t.type==='income'?'Доход':'Расход');
+  const emoji=t.emoji||(t.type==='income'?'💰':'💸');
+  el.innerHTML=rowHTML(t.id,20,'','<span class="recent-emoji">'+emoji+'</span><div class="recent-info"><div class="recent-name">'+esc(label)+'</div><div class="recent-date">'+fmtDT(t.ts)+'</div></div><span class="recent-amount" style="color:'+color+'">'+sign+money(t.amount)+'</span>');
+  initRows(el);
 }
-let histFilter='all';
-function renderHist(){
-  const el=$('histList');if(!el)return;
-  const inc=transactions.filter(function(t){return t.type==='income';}).reduce(function(a,t){return a+t.amount;},0);
-  const exp=transactions.filter(function(t){return t.type==='expense';}).reduce(function(a,t){return a+t.amount;},0);
-  $('histSum').innerHTML=transactions.length?'<div class="hist-sum"><div class="glass"><small>'+tr('Доходы')+'</small><b style="color:var(--money-pos)">+'+money(inc)+'</b></div><div class="glass"><small>'+tr('Расходы')+'</small><b>−'+money(exp)+'</b></div></div>':'';
-  const list=transactions.filter(function(t){return histFilter==='all'||t.type===histFilter;}).slice().reverse();
-  if(!list.length){el.innerHTML='<div class="empty" style="padding:40px 0;text-align:center;color:var(--dim)">'+tr('Пока нет операций')+'</div>';return;}
-  let html='',curKey='',dayTot=0,dayIdx=-1,parts=[];
-  list.forEach(function(t){
-    const d=new Date(t.ts),key=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();
-    if(key!==curKey){curKey=key;parts.push({title:relDay(t.ts),sum:0,items:[]});}
-    const p=parts[parts.length-1];p.sum+=t.type==='income'?t.amount:-t.amount;p.items.push(t);
-  });
-  parts.forEach(function(p){
-    html+='<div class="hist-day"><span>'+p.title+'</span><span>'+(p.sum>=0?'+':'−')+money(Math.abs(p.sum))+'</span></div>';
-    p.items.forEach(function(t){
-      const v=txView(t),dd=new Date(t.ts),tm=String(dd.getHours()).padStart(2,'0')+':'+String(dd.getMinutes()).padStart(2,'0');
-      html+=rowHTML(t.id,20,'','<div class="tx-ico">'+v.emoji+'</div><div class="tx-info"><div class="tx-name">'+esc(v.label)+'</div><div class="tx-date">'+tm+'</div></div><span class="tx-amt" style="color:'+(t.type==='income'?v.color:'var(--text)')+'">'+v.sign+money(t.amount)+'</span>');
-    });
-  });
-  el.innerHTML=html;initRows(el);
-}
-function openHist(){
-  if(!transactions.length)return;
-  buzz('light');histFilter='all';
-  document.querySelectorAll('#histFilter .seg-btn').forEach(function(b){b.classList.toggle('active',b.dataset.val==='all');});
-  renderHist();$('histScreen').scrollTop=0;$('histScreen').classList.add('open');syncTgBack();
-}
-function closeHist(){$('histScreen').classList.remove('open');syncTgBack();}
 function renderStats(){
   const now=new Date(),y=now.getFullYear(),m=now.getMonth();
   const cur=monthIncomeSum(y,m);
@@ -1207,7 +1141,7 @@ attachSwipe(document.getElementById('goalsList'),{list:goals,msg:'Цель уд�
 attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:function(row){const c=credits.find(function(x){return String(x.id)===row.dataset.id;});openDetail(c?c.name:'Задолженность');},onRemove:function(){if(!credits.length)renderCredits();else saveData();}});
 attachSwipe(document.getElementById('subsList'),{list:subs,msg:'Подписка удалена',tap:function(row){const s=subs.find(function(x){return String(x.id)===row.dataset.id;});openDetail(s?s.name:'Подписка');},onRemove:function(){if(!subs.length)renderSubs();else saveData();}});
 attachSwipe(document.getElementById('sourcesList'),{list:sources,msg:'Источник дохода удалён',onRemove:function(s){if(s){balance-=s.amount;monthDelta-=s.amount;monthIncome-=s.amount;renderBalance();renderStats();}if(!sources.length)renderSources();}});
-function onTxRemove(t){
+attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Транзакция удалена',onRemove:function(t){
   if(t){
     if(t.type==='income'){
       balance-=t.amount;monthDelta-=t.amount;monthIncome-=t.amount;
@@ -1221,9 +1155,7 @@ function onTxRemove(t){
     renderBalance();
   }
   renderRecent();renderReport();renderStats();
-}
-attachSwipe(document.getElementById('histList'),{list:transactions,msg:'Транзакция удалена',onRemove:function(t){onTxRemove(t);renderHist();if(!transactions.length)closeHist();}});
-$('histFilter').addEventListener('click',function(e){const b=e.target.closest('.seg-btn');if(!b)return;histFilter=b.dataset.val;document.querySelectorAll('#histFilter .seg-btn').forEach(function(x){x.classList.toggle('active',x===b);});renderHist();});
+}});
 
 const tabs=document.querySelectorAll('.tab[data-view]');
 const views={home:document.getElementById('view-home'),stats:document.getElementById('view-stats'),goals:document.getElementById('view-goals')};
@@ -1338,10 +1270,10 @@ let spStack=[];
 const tgBack=window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.BackButton;
 function syncTgBack(){
   if(!tgBack)return;
-  const on=settingsScreen.classList.contains('open')||$('histScreen').classList.contains('open');
+  const on=settingsScreen.classList.contains('open');
   try{on?tgBack.show():tgBack.hide();}catch(e){}
 }
-if(tgBack){try{tgBack.onClick(function(){if($('histScreen').classList.contains('open'))closeHist();else if(spStack.length)spBack();else closeSettings();});}catch(e){}}
+if(tgBack){try{tgBack.onClick(function(){if(spStack.length)spBack();else closeSettings();});}catch(e){}}
 function spCurrentEl(){return spStack.length?$('sp-'+spStack[spStack.length-1]):$('sp-root');}
 function spGo(id){
   spCurrentEl().classList.add('pushed');
@@ -1853,7 +1785,6 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     tg.onEvent&&tg.onEvent('viewportChanged',applyTgTop);
   }catch(e){}
 })();
-Object.assign(EN,{'Все':'All','Все транзакции':'All transactions','Сегодня':'Today','Вчера':'Yesterday','Доходы':'Income','Расходы':'Expenses'});
 </script>
 </body>
 </html>
