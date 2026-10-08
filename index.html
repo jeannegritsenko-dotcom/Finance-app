@@ -1775,6 +1775,7 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
       document.documentElement.style.setProperty('--tg-top-extra',(tg.isFullscreen?40:0)+'px');
     }catch(e){}
   }
+  try{if(!tg.isFullscreen&&(tg.platform==='ios'||tg.platform==='android')&&tg.isVersionAtLeast&&tg.isVersionAtLeast('8.0')&&tg.requestFullscreen)tg.requestFullscreen();}catch(e){}
   applyTgTop();
   try{if(tg.platform&&tg.platform!=='unknown'&&tg.BackButton&&tg.isVersionAtLeast&&tg.isVersionAtLeast('6.1'))document.documentElement.classList.add('tgback');}catch(e){}
   try{
