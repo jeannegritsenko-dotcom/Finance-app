@@ -242,8 +242,9 @@ input[type=number]{-moz-appearance:textfield;}
 html[data-bg="on"] #bgPhoto{display:block;}
 html[data-bg="on"] .app{background:transparent;}
 html[data-bg="on"] .settings-screen,html[data-bg="on"] .spage{background:var(--bgcomp) center/cover no-repeat;}
-html[data-bg="on"][data-appearance="dark"]{--glass:rgba(255,255,255,.075);--glass-strong:rgba(255,255,255,.13);--glass-border:rgba(255,255,255,.2);--icon-bg:rgba(255,255,255,.1);--track-bg:rgba(255,255,255,.16);--tb-grad1:rgba(40,40,40,.42);--tb-grad2:rgba(24,24,24,.5);}
-html[data-bg="on"][data-appearance="light"]{--glass:rgba(255,255,255,.5);--glass-strong:rgba(255,255,255,.65);--glass-border:rgba(255,255,255,.75);--icon-bg:rgba(255,255,255,.55);--tb-grad1:rgba(255,255,255,.6);--tb-grad2:rgba(246,246,250,.65);}
+html[data-bg="on"][data-appearance="dark"]{--glass:rgba(8,8,10,var(--ga,.4));--glass-strong:rgba(8,8,10,calc(var(--ga,.4) + .14));--glass-border:rgba(255,255,255,.2);--icon-bg:rgba(255,255,255,.12);--track-bg:rgba(255,255,255,.2);--dim:rgba(245,245,247,.84);--dim2:rgba(245,245,247,.64);--tb-grad1:rgba(14,14,16,.55);--tb-grad2:rgba(8,8,10,.62);--tshadow:0 1px 2px rgba(0,0,0,.7),0 0 10px rgba(0,0,0,.6),0 0 24px rgba(0,0,0,.45);}
+html[data-bg="on"][data-appearance="light"]{--glass:rgba(255,255,255,var(--ga,.4));--glass-strong:rgba(255,255,255,calc(var(--ga,.4) + .14));--glass-border:rgba(255,255,255,.8);--icon-bg:rgba(255,255,255,.55);--dim:rgba(20,20,22,.78);--dim2:rgba(20,20,22,.58);--tb-grad1:rgba(255,255,255,.66);--tb-grad2:rgba(246,246,250,.72);--tshadow:0 1px 3px rgba(255,255,255,.7),0 0 16px rgba(255,255,255,.6);}
+html[data-bg="on"] .topbar-title,html[data-bg="on"] .section-header h2,html[data-bg="on"] .sp-title,html[data-bg="on"] .settings-group-title,html[data-bg="on"] .sg-foot,html[data-bg="on"] .settings-hint{text-shadow:var(--tshadow);}
 .bg-thumb{width:44px;height:44px;border-radius:12px;object-fit:cover;border:1px solid var(--glass-border);flex-shrink:0;display:none;}
 .bg-btn{border:1px solid var(--glass-border);background:var(--glass-strong);color:var(--text);font:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;}
 .bg-btn:active{transform:scale(.96);}
@@ -553,7 +554,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     <div class="spage sub" id="sp-appearance"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
       <h1 class="sp-title">Оформление</h1>
-      <div class="settings-body"><div class="settings-section"><div class="settings-group glass"><div class="settings-row "><div class="sr-t">Тема</div><div class="segmented" data-key="theme"><button class="seg-btn" data-val="dark">Тёмная</button><button class="seg-btn" data-val="light">Светлая</button></div></div><div class="settings-row "><img class="bg-thumb" id="bgThumb" alt=""><div class="sr-t">Фон<small>Своя фотография под стеклянными карточками</small></div><button class="bg-btn" id="bgPick">Выбрать фото</button></div><div class="settings-row dep-bg" style="display:none;flex-direction:column;align-items:stretch;gap:4px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="sr-t">Затемнение</div><span class="nav-val" id="bgDimVal"></span></div><input class="bg-range" type="range" id="bgDim" min="0" max="90" step="1"></div><div class="settings-row dep-bg" style="display:none;flex-direction:column;align-items:stretch;gap:4px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="sr-t">Размытие стекла</div><span class="nav-val" id="bgBlurVal"></span></div><input class="bg-range" type="range" id="bgBlur" min="0" max="40" step="1"></div><div class="settings-row dep-bg bg-remove" id="bgRemove" style="display:none">Убрать фон</div><input type="file" id="bgFile" accept="image/*" style="display:none"><div class="settings-row "><div class="sr-t">Компактные карточки<small>Меньше отступов — помещается больше</small></div><button class="switch" data-key="compact" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Анимация<small>Переходы и эффекты в интерфейсе</small></div><button class="switch" data-key="anim" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Вибрация<small>Отклик при нажатиях и свайпах</small></div><button class="switch" data-key="vibration" role="switch" aria-checked="false"><span class="knob"></span></button></div></div></div></div>
+      <div class="settings-body"><div class="settings-section"><div class="settings-group glass"><div class="settings-row "><div class="sr-t">Тема</div><div class="segmented" data-key="theme"><button class="seg-btn" data-val="dark">Тёмная</button><button class="seg-btn" data-val="light">Светлая</button></div></div><div class="settings-row "><img class="bg-thumb" id="bgThumb" alt=""><div class="sr-t">Фон<small>Своя фотография под стеклянными карточками</small></div><button class="bg-btn" id="bgPick">Выбрать фото</button></div><div class="settings-row dep-bg" style="display:none;flex-direction:column;align-items:stretch;gap:4px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="sr-t">Затемнение</div><span class="nav-val" id="bgDimVal"></span></div><input class="bg-range" type="range" id="bgDim" min="0" max="90" step="1"></div><div class="settings-row dep-bg" style="display:none;flex-direction:column;align-items:stretch;gap:4px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="sr-t">Размытие стекла</div><span class="nav-val" id="bgBlurVal"></span></div><input class="bg-range" type="range" id="bgBlur" min="0" max="40" step="1"></div><div class="settings-row dep-bg" style="display:none;flex-direction:column;align-items:stretch;gap:4px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="sr-t">Плотность стекла<small>Выше — текст на карточках читается лучше</small></div><span class="nav-val" id="bgGlassVal"></span></div><input class="bg-range" type="range" id="bgGlass" min="0" max="80" step="1"></div><div class="settings-row dep-bg bg-remove" id="bgRemove" style="display:none">Убрать фон</div><input type="file" id="bgFile" accept="image/*" style="display:none"><div class="settings-row "><div class="sr-t">Компактные карточки<small>Меньше отступов — помещается больше</small></div><button class="switch" data-key="compact" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Анимация<small>Переходы и эффекты в интерфейсе</small></div><button class="switch" data-key="anim" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Вибрация<small>Отклик при нажатиях и свайпах</small></div><button class="switch" data-key="vibration" role="switch" aria-checked="false"><span class="knob"></span></button></div></div></div></div>
     </div>
     <div class="spage sub" id="sp-currency"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
@@ -651,7 +652,7 @@ let sources=[];
 let _uid=1;const uid=()=>_uid++;
 [goals,credits,sources,subs].forEach(function(a){a.forEach(function(o){o.id=uid();});});
 const $=id=>document.getElementById(id);
-const DEF={theme:'dark',bgOn:false,bgDim:45,bgBlur:28,showCredits:true,hideBalance:false,homeGoals:true,homeQuick:true,homeDelta:true,homeSubs:true,homeRecent:true,sectionOrder:['recent','subs','goals','credits'],compact:false,currency:'RUB',nCredit:true,nDays:3,nGoals:true,nReport:false,nDaily:false,pinHash:null,bio:false,lockAfter:1,lang:'ru',anim:true,vibration:true,showBalanceNotif:true,notifyTime:1200};
+const DEF={theme:'dark',bgOn:false,bgDim:10,bgBlur:24,bgGlass:50,bgv:2,showCredits:true,hideBalance:false,homeGoals:true,homeQuick:true,homeDelta:true,homeSubs:true,homeRecent:true,sectionOrder:['recent','subs','goals','credits'],compact:false,currency:'RUB',nCredit:true,nDays:3,nGoals:true,nReport:false,nDaily:false,pinHash:null,bio:false,lockAfter:1,lang:'ru',anim:true,vibration:true,showBalanceNotif:true,notifyTime:1200};
 let settings=Object.assign({},DEF);
 let _savedRaw={};
 try{_savedRaw=JSON.parse(localStorage.getItem('financeSettings')||'{}');}catch(e){}
@@ -1367,7 +1368,7 @@ function syncSettingsUI(){
   const c=cur();
   $('val-appearance').textContent=tr(settings.theme==='light'?'Светлая':'Тёмная');
   document.querySelectorAll('.dep-bg').forEach(function(r){r.style.display=settings.bgOn?'':'none';});
-  (function(){const d=$('bgDim'),b=$('bgBlur');if(!d)return;d.value=settings.bgDim;b.value=settings.bgBlur;$('bgDimVal').textContent=settings.bgDim+'%';$('bgBlurVal').textContent=settings.bgBlur;$('bgPick').textContent=tr(settings.bgOn?'Заменить':'Выбрать фото');})();
+  (function(){const d=$('bgDim'),b=$('bgBlur'),g=$('bgGlass');if(!d)return;d.value=settings.bgDim;b.value=settings.bgBlur;g.value=settings.bgGlass;$('bgDimVal').textContent=settings.bgDim+'%';$('bgBlurVal').textContent=settings.bgBlur;$('bgGlassVal').textContent=settings.bgGlass+'%';$('bgPick').textContent=tr(settings.bgOn?'Заменить':'Выбрать фото');})();
   $('val-lockafter').textContent=lockLabel(settings.lockAfter);
   (function(){
     const on=!!(settings.pinHash||settings.bio),parts=[];
@@ -1862,6 +1863,7 @@ Object.assign(EN,{'Защита включена':'Protection on','Защита 
 /* ===== Свой фон: фото из галереи ===== */
 (function(){
   let bgURL=null,memBlob=null;
+  if(settings.bgv!==2){settings.bgv=2;settings.bgDim=10;settings.bgBlur=24;settings.bgGlass=50;saveSettings();}
   function idb(){return new Promise(function(res,rej){try{const r=indexedDB.open('monvelly',1);r.onupgradeneeded=function(){r.result.createObjectStore('kv');};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};}catch(e){rej(e);}});}
   function kv(mode,fn){return idb().then(function(db){return new Promise(function(res,rej){const tx=db.transaction('kv',mode),st=tx.objectStore('kv'),rq=fn(st);tx.oncomplete=function(){res(rq&&rq.result);};tx.onerror=function(){rej(tx.error);};});});}
   function bgLoad(){return kv('readonly',function(st){return st.get('bg');}).catch(function(){return memBlob;});}
@@ -1880,9 +1882,10 @@ Object.assign(EN,{'Защита включена':'Protection on','Защита 
       const a=(settings.bgDim/100).toFixed(2),c=settings.theme==='light'?'255,255,255':'0,0,0';
       root.style.setProperty('--bgcomp','linear-gradient(rgba('+c+','+a+'),rgba('+c+','+a+')),url("'+bgURL+'")');
       root.style.setProperty('--gblur',settings.bgBlur+'px');
+      root.style.setProperty('--ga',(settings.bgGlass/100).toFixed(2));
       root.setAttribute('data-bg','on');
     }else{
-      root.removeAttribute('data-bg');root.style.removeProperty('--bgcomp');root.style.removeProperty('--gblur');
+      root.removeAttribute('data-bg');root.style.removeProperty('--bgcomp');root.style.removeProperty('--gblur');root.style.removeProperty('--ga');
     }
   };
   function loadImage(file){
@@ -1909,13 +1912,13 @@ Object.assign(EN,{'Защита включена':'Protection on','Защита 
     settings.bgOn=false;saveSettings();bgDel();setBlob(null);syncSettingsUI();buzz('select');
   });
   function onRange(id,key,val){
-    $(id).addEventListener('input',function(){settings[key]=+this.value;$(val).textContent=key==='bgDim'?this.value+'%':this.value;window.applyBg();});
+    $(id).addEventListener('input',function(){settings[key]=+this.value;$(val).textContent=key==='bgBlur'?this.value:this.value+'%';window.applyBg();});
     $(id).addEventListener('change',function(){saveSettings();});
   }
-  onRange('bgDim','bgDim','bgDimVal');onRange('bgBlur','bgBlur','bgBlurVal');
+  onRange('bgDim','bgDim','bgDimVal');onRange('bgBlur','bgBlur','bgBlurVal');onRange('bgGlass','bgGlass','bgGlassVal');
   if(settings.bgOn){bgLoad().then(function(b){if(b)setBlob(b);else{settings.bgOn=false;saveSettings();syncSettingsUI();}});}
 })();
-Object.assign(EN,{'Фон':'Background','Своя фотография под стеклянными карточками':'Your own photo behind the glass cards','Выбрать фото':'Choose photo','Заменить':'Replace','Затемнение':'Dim','Размытие стекла':'Glass blur','Убрать фон':'Remove background','Фон не сохранится после закрытия приложения':'The background will not be kept after closing the app','Не удалось открыть это фото':'Could not open this photo'});
+Object.assign(EN,{'Фон':'Background','Своя фотография под стеклянными карточками':'Your own photo behind the glass cards','Выбрать фото':'Choose photo','Заменить':'Replace','Затемнение':'Dim','Размытие стекла':'Glass blur','Убрать фон':'Remove background','Плотность стекла':'Glass density','Выше — текст на карточках читается лучше':'Higher — text on cards is easier to read','Фон не сохранится после закрытия приложения':'The background will not be kept after closing the app','Не удалось открыть это фото':'Could not open this photo'});
 </script>
 </body>
 </html>
