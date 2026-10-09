@@ -173,6 +173,10 @@ input[type=number]{-moz-appearance:textfield;}
 .settings-group-title{font-size:13px;color:var(--dim);padding:0 6px 8px;}
 .settings-group{border-radius:20px;overflow:hidden;}
 .sec-status{padding:26px 20px;text-align:center;}
+.sec-ic{width:64px;height:64px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;background:var(--glass-strong);border:1px solid var(--glass-border);transition:opacity .2s;}
+.sec-ic svg{width:30px;height:30px;fill:none;stroke:var(--text);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.sec-status.off .sec-ic{opacity:.5;}
+#sp-security .nav-lbl{font-size:15px;font-weight:400;}
 .sec-st-t{font-size:21px;font-weight:700;letter-spacing:-.3px;}
 .sec-st-s{font-size:14px;color:var(--dim);margin-top:6px;line-height:1.4;}
 .acc-row{display:flex;align-items:center;gap:14px;padding:14px 16px;}
@@ -566,7 +570,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     <div class="spage sub" id="sp-security"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
       <h1 class="sp-title">Безопасность</h1>
-      <div class="settings-body"><div class="settings-group glass sec-status"><div class="sec-st-t" id="secStT"></div><div class="sec-st-s" id="secStS"></div></div><div class="settings-group glass" style="margin-top:10px;"><div class="settings-row "><div class="sr-t">Код-пароль</div><button class="switch" data-key="pin" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row"><div class="sr-t">Face ID</div><button class="switch" data-key="bio" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="nav-row plain dep-lock" data-go="lockafter"><span class="nav-lbl">Автоблокировка</span><span class="nav-val" id="val-lockafter"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="settings-row dep-pin" id="pinChange" style="cursor:pointer"><div class="sr-t">Сменить код</div><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div><div class="settings-group glass" style="margin-top:10px;"><div class="settings-row "><div class="sr-t">Скрывать баланс</div><button class="switch" data-key="hideBalance" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Баланс в push</div><button class="switch" data-key="showBalanceNotif" role="switch" aria-checked="false"><span class="knob"></span></button></div></div></div>
+      <div class="settings-body"><div class="settings-group glass sec-status"><div class="sec-ic"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></div><div class="sec-st-t" id="secStT"></div><div class="sec-st-s" id="secStS"></div></div><div class="settings-group glass" style="margin-top:10px;"><div class="settings-row "><div class="sr-t">Код-пароль</div><button class="switch" data-key="pin" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row"><div class="sr-t">Face ID</div><button class="switch" data-key="bio" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="nav-row plain dep-lock" data-go="lockafter"><span class="nav-lbl">Автоблокировка</span><span class="nav-val" id="val-lockafter"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="settings-row dep-pin" id="pinChange" style="cursor:pointer"><div class="sr-t">Сменить код</div><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div><div class="settings-group glass" style="margin-top:10px;"><div class="settings-row "><div class="sr-t">Скрывать баланс</div><button class="switch" data-key="hideBalance" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Баланс в push</div><button class="switch" data-key="showBalanceNotif" role="switch" aria-checked="false"><span class="knob"></span></button></div></div></div>
     </div>
     <div class="spage sub" id="sp-lockafter"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Безопасность</button></div>
@@ -1348,8 +1352,9 @@ function syncSettingsUI(){
     const on=!!(settings.pinHash||settings.bio),parts=[];
     if(settings.pinHash)parts.push(tr('Код-пароль'));
     if(settings.bio)parts.push('Face ID');
+    document.querySelector('.sec-status').classList.toggle('off',!on);
     $('secStT').textContent=tr(on?'Защита включена':'Защита выключена');
-    $('secStS').textContent=on?parts.join(' '+tr('и')+' ')+' · '+(settings.lockAfter>0?tr('блокировка через')+' '+lockLabel(settings.lockAfter):tr('блокировка сразу')):tr('Включите код-пароль, чтобы закрыть доступ к приложению');
+    $('secStS').textContent=on?parts.join(' '+tr('и')+' ')+' · '+(settings.lockAfter>0?tr('блокировка через')+' '+lockLabel(settings.lockAfter).replace(/ /g,'\u00A0'):tr('блокировка сразу')):tr('Включите код-пароль, чтобы закрыть доступ к приложению');
   })();
   $('lockPreview').textContent=lockLabel(settings.lockAfter);
   $('val-notifytime').textContent=timeLabel(settings.notifyTime);
