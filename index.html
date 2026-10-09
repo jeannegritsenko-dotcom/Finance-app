@@ -172,6 +172,9 @@ input[type=number]{-moz-appearance:textfield;}
 .settings-section{margin-bottom:15px;}
 .settings-group-title{font-size:13px;color:var(--dim);padding:0 6px 8px;}
 .settings-group{border-radius:20px;overflow:hidden;}
+.sec-status{padding:26px 20px;text-align:center;}
+.sec-st-t{font-size:21px;font-weight:700;letter-spacing:-.3px;}
+.sec-st-s{font-size:14px;color:var(--dim);margin-top:6px;line-height:1.4;}
 .acc-row{display:flex;align-items:center;gap:14px;padding:14px 16px;}
 .acc-av{width:60px;height:60px;border-radius:50%;flex-shrink:0;background:linear-gradient(145deg,#6a5cff,#b05bff);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;overflow:hidden;}
 .acc-av img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -563,7 +566,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     <div class="spage sub" id="sp-security"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
       <h1 class="sp-title">Безопасность</h1>
-      <div class="settings-body"><div class="settings-section"><div class="settings-group-title">Приватность</div><div class="settings-group glass"><div class="settings-row "><div class="sr-t">Скрывать баланс<small>Суммы заменяются точками</small></div><button class="switch" data-key="hideBalance" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Показывать баланс в уведомлениях<small>Если выключить, суммы будут скрыты в превью уведомлений</small></div><button class="switch" data-key="showBalanceNotif" role="switch" aria-checked="false"><span class="knob"></span></button></div></div></div><div class="settings-section"><div class="settings-group-title">Вход в приложение</div><div class="settings-group glass"><div class="settings-row "><div class="sr-t">Код-пароль<small>Спрашивать код при входе</small></div><button class="switch" data-key="pin" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row"><div class="sr-t">Face ID<small>Быстрая разблокировка</small></div><button class="switch" data-key="bio" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="nav-row plain dep-lock" data-go="lockafter"><span class="nav-lbl">Автоблокировка</span><span class="nav-val" id="val-lockafter"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="settings-row dep-pin" id="pinChange" style="cursor:pointer"><div class="sr-t">Сменить код</div><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div></div>
+      <div class="settings-body"><div class="settings-group glass sec-status"><div class="sec-st-t" id="secStT"></div><div class="sec-st-s" id="secStS"></div></div><div class="settings-group glass" style="margin-top:10px;"><div class="settings-row "><div class="sr-t">Код-пароль</div><button class="switch" data-key="pin" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row"><div class="sr-t">Face ID</div><button class="switch" data-key="bio" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="nav-row plain dep-lock" data-go="lockafter"><span class="nav-lbl">Автоблокировка</span><span class="nav-val" id="val-lockafter"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="settings-row dep-pin" id="pinChange" style="cursor:pointer"><div class="sr-t">Сменить код</div><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div><div class="settings-group glass" style="margin-top:10px;"><div class="settings-row "><div class="sr-t">Скрывать баланс</div><button class="switch" data-key="hideBalance" role="switch" aria-checked="false"><span class="knob"></span></button></div><div class="settings-row "><div class="sr-t">Баланс в push</div><button class="switch" data-key="showBalanceNotif" role="switch" aria-checked="false"><span class="knob"></span></button></div></div></div>
     </div>
     <div class="spage sub" id="sp-lockafter"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Безопасность</button></div>
@@ -1341,6 +1344,13 @@ function syncSettingsUI(){
   const c=cur();
   $('val-appearance').textContent=tr(settings.theme==='light'?'Светлая':'Тёмная');
   $('val-lockafter').textContent=lockLabel(settings.lockAfter);
+  (function(){
+    const on=!!(settings.pinHash||settings.bio),parts=[];
+    if(settings.pinHash)parts.push(tr('Код-пароль'));
+    if(settings.bio)parts.push('Face ID');
+    $('secStT').textContent=tr(on?'Защита включена':'Защита выключена');
+    $('secStS').textContent=on?parts.join(' '+tr('и')+' ')+' · '+(settings.lockAfter>0?tr('блокировка через')+' '+lockLabel(settings.lockAfter):tr('блокировка сразу')):tr('Включите код-пароль, чтобы закрыть доступ к приложению');
+  })();
   $('lockPreview').textContent=lockLabel(settings.lockAfter);
   $('val-notifytime').textContent=timeLabel(settings.notifyTime);
   $('notifyTimePreview').textContent=timeLabel(settings.notifyTime);
@@ -1821,6 +1831,7 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     tg.onEvent&&tg.onEvent('viewportChanged',applyTgTop);
   }catch(e){}
 })();
+Object.assign(EN,{'Защита включена':'Protection on','Защита выключена':'Protection off','и':'and','блокировка сразу':'lock instantly','блокировка через':'lock after','Включите код-пароль, чтобы закрыть доступ к приложению':'Turn on a passcode to protect access to the app','Баланс в push':'Balance in push'});
 </script>
 </body>
 </html>
