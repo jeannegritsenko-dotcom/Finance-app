@@ -1777,7 +1777,6 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     const av=document.getElementById('accAv');
     av.textContent=(nm||'П').charAt(0).toUpperCase();
     if(u&&u.photo_url){const im=new Image();im.onload=function(){av.textContent='';av.appendChild(im);};im.src=u.photo_url;}
-    if(u&&u.is_premium)document.getElementById('accPrem').style.display='inline-flex';
     const EMOJI_API=''; /* ← сюда вставить адрес воркера, например https://monvelly-emoji.ИМЯ.workers.dev */
     if(EMOJI_API&&tg0&&tg0.initData){
       fetch(EMOJI_API+'/emoji-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:tg0.initData})})
