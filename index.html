@@ -743,20 +743,20 @@ function applyTheme(){
 }
 applyTheme();applyAnim();
 const CURS=[
- {c:'RUB',s:'₽',n:'Российский рубль',e:'Russian ruble',sn:'Рубль',se:'Ruble',pos:'post',loc:'ru-RU'},
- {c:'USD',s:'$',n:'Доллар США',e:'US dollar',sn:'Доллар',se:'Dollar',pos:'pre',loc:'en-US'},
- {c:'EUR',s:'€',n:'Евро',e:'Euro',sn:'Евро',se:'Euro',pos:'pre',loc:'en-US'},
- {c:'GBP',s:'£',n:'Фунт стерлингов',e:'British pound',sn:'Фунт',se:'Pound',pos:'pre',loc:'en-US'},
- {c:'KZT',s:'₸',n:'Казахстанский тенге',e:'Kazakhstani tenge',sn:'Тенге',se:'Tenge',pos:'post',loc:'ru-RU'},
- {c:'UAH',s:'₴',n:'Украинская гривна',e:'Ukrainian hryvnia',sn:'Гривна',se:'Hryvnia',pos:'post',loc:'ru-RU'},
- {c:'BYN',s:'Br',n:'Белорусский рубль',e:'Belarusian ruble',sn:'Бел. рубль',se:'Belarusian ruble',pos:'post',loc:'ru-RU'},
- {c:'GEL',s:'₾',n:'Грузинский лари',e:'Georgian lari',sn:'Лари',se:'Lari',pos:'post',loc:'ru-RU'},
- {c:'AMD',s:'֏',n:'Армянский драм',e:'Armenian dram',sn:'Драм',se:'Dram',pos:'post',loc:'ru-RU'},
- {c:'UZS',s:'сўм',n:'Узбекский сум',e:'Uzbekistani som',sn:'Сум',se:'Som',pos:'post',loc:'ru-RU'},
- {c:'AZN',s:'₼',n:'Азербайджанский манат',e:'Azerbaijani manat',sn:'Манат',se:'Manat',pos:'post',loc:'ru-RU'},
- {c:'TRY',s:'₺',n:'Турецкая лира',e:'Turkish lira',sn:'Лира',se:'Lira',pos:'pre',loc:'en-US'},
- {c:'PLN',s:'zł',n:'Польский злотый',e:'Polish złoty',sn:'Злотый',se:'Zloty',pos:'post',loc:'ru-RU'},
- {c:'CNY',s:'¥',n:'Китайский юань',e:'Chinese yuan',sn:'Юань',se:'Yuan',pos:'pre',loc:'en-US'}
+ {c:'RUB',s:'₽',n:'Российский рубль',e:'Russian ruble',pos:'post',loc:'ru-RU'},
+ {c:'USD',s:'$',n:'Доллар США',e:'US dollar',pos:'pre',loc:'en-US'},
+ {c:'EUR',s:'€',n:'Евро',e:'Euro',pos:'pre',loc:'en-US'},
+ {c:'GBP',s:'£',n:'Фунт стерлингов',e:'British pound',pos:'pre',loc:'en-US'},
+ {c:'KZT',s:'₸',n:'Казахстанский тенге',e:'Kazakhstani tenge',pos:'post',loc:'ru-RU'},
+ {c:'UAH',s:'₴',n:'Украинская гривна',e:'Ukrainian hryvnia',pos:'post',loc:'ru-RU'},
+ {c:'BYN',s:'Br',n:'Белорусский рубль',e:'Belarusian ruble',pos:'post',loc:'ru-RU'},
+ {c:'GEL',s:'₾',n:'Грузинский лари',e:'Georgian lari',pos:'post',loc:'ru-RU'},
+ {c:'AMD',s:'֏',n:'Армянский драм',e:'Armenian dram',pos:'post',loc:'ru-RU'},
+ {c:'UZS',s:'сўм',n:'Узбекский сум',e:'Uzbekistani som',pos:'post',loc:'ru-RU'},
+ {c:'AZN',s:'₼',n:'Азербайджанский манат',e:'Azerbaijani manat',pos:'post',loc:'ru-RU'},
+ {c:'TRY',s:'₺',n:'Турецкая лира',e:'Turkish lira',pos:'pre',loc:'en-US'},
+ {c:'PLN',s:'zł',n:'Польский злотый',e:'Polish złoty',pos:'post',loc:'ru-RU'},
+ {c:'CNY',s:'¥',n:'Китайский юань',e:'Chinese yuan',pos:'pre',loc:'en-US'}
 ];
 const cur=()=>CURS.find(function(x){return x.c===settings.currency;})||CURS[0];
 function applyAnim(){document.documentElement.setAttribute('data-anim',settings.anim?'on':'off');}
@@ -1449,7 +1449,7 @@ function syncSettingsUI(){
   $('lockPreview').textContent=lockLabel(settings.lockAfter);
   $('val-notifytime').textContent=timeLabel(settings.notifyTime);
   $('notifyTimePreview').textContent=timeLabel(settings.notifyTime);
-  $('val-currency').textContent=settings.lang==='en'?c.se:c.sn;
+  $('val-currency').textContent=c.c;
   $('val-lang').textContent=(LANGS.find(function(l){return l.c===settings.lang;})||LANGS[0]).n;
   $('curPreview').textContent=money(128450);
   document.querySelectorAll('.cur-row[data-c]').forEach(function(r){r.classList.toggle('sel',r.dataset.c===c.c);});
