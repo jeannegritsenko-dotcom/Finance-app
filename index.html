@@ -724,14 +724,10 @@ let sources=[];
 let _uid=1;const uid=()=>_uid++;
 [goals,credits,sources,subs].forEach(function(a){a.forEach(function(o){o.id=uid();});});
 const $=id=>document.getElementById(id);
-const DEF={theme:'dark',bgOn:false,bgDim:10,bgBlur:24,bgGlass:50,bgv:2,showCredits:true,hideBalance:false,homeGoals:true,homeQuick:true,homeDelta:true,homeSubs:true,homeRecent:true,sectionOrder:['recent','subs','goals','credits'],compact:false,currency:'RUB',nCredit:true,nDays:3,nGoals:true,nReport:false,nDaily:false,pinHash:null,bio:false,lockAfter:1,lang:'ru',anim:true,vibration:true,showBalanceNotif:true,notifyTime:1200};
+const DEF={theme:'light',bgOn:false,bgDim:10,bgBlur:24,bgGlass:50,bgv:2,showCredits:true,hideBalance:false,homeGoals:true,homeQuick:true,homeDelta:true,homeSubs:true,homeRecent:true,sectionOrder:['recent','subs','goals','credits'],compact:false,currency:'RUB',nCredit:true,nDays:3,nGoals:true,nReport:false,nDaily:false,pinHash:null,bio:false,lockAfter:1,lang:'ru',anim:true,vibration:true,showBalanceNotif:true,notifyTime:1200};
 let settings=Object.assign({},DEF);
 let _savedRaw={};
 try{_savedRaw=JSON.parse(localStorage.getItem('financeSettings')||'{}');}catch(e){}
-if(!('theme' in _savedRaw)){
-  const tgc=window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.colorScheme;
-  if(tgc==='light')settings.theme='light';
-}
 Object.assign(settings,_savedRaw);
 if(Array.isArray(settings.sectionOrder)&&!settings.sectionOrder.includes('recent')){
   settings.sectionOrder=['recent'].concat(settings.sectionOrder);
