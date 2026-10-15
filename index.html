@@ -432,7 +432,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   if(document.readyState==='complete')loaded=true;else window.addEventListener('load',function(){loaded=true;chk();});
   setTimeout(function(){loaded=ready=true;chk();},9000);
   function setStage(n){if(n===stage)return;stage=n;st.classList.add('sx-out');setTimeout(function(){st.textContent=N[n];st.classList.remove('sx-out');},230);}
-  function close(){if(closing)return;closing=true;setTimeout(function(){el.classList.add('sx-hide');setTimeout(function(){cancelAnimationFrame(raf);if(el.parentNode)el.parentNode.removeChild(el);},560);},380);}
+  function close(){if(closing)return;closing=true;setTimeout(function(){el.classList.add('sx-hide');window.__sxGone=true;try{window.dispatchEvent(new Event('sxgone'));}catch(e){}setTimeout(function(){cancelAnimationFrame(raf);if(el.parentNode)el.parentNode.removeChild(el);},560);},380);}
   var w=0;
   function f(ts){
     var t=Math.max(0,Math.min(1,(ts-t0-START)/DUR));var e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;e=.5*t+.5*e;
@@ -1889,9 +1889,13 @@ function pinOpen(mode,cb){
   pinSub.textContent='';pinLink.textContent=tr(bioOnly?'Не получается? Отключить Face ID':mode==='unlock'?'Забыли код?':'Отмена');pinLink.dataset.armed='';
   $('pinBio').innerHTML=(mode==='unlock'&&settings.bio)?'<svg viewBox="0 0 24 24"><use href="#i-face"/></svg>':'';
   pinRender();pinEl.classList.add('show');
-  if(bioOnly)faceScan.start($('pinScan'));
-  if(mode==='unlock'&&settings.bio)setTimeout(bioUnlock,350);
+  afterSplash(function(){
+    if(!pinEl.classList.contains('show')||pinMode!==mode)return;
+    if(bioOnly)faceScan.start($('pinScan'));
+    if(mode==='unlock'&&settings.bio)setTimeout(bioUnlock,350);
+  });
 }
+function afterSplash(cb){if(window.__sxGone||!document.getElementById('splash')){cb();return;}window.addEventListener('sxgone',function h(){window.removeEventListener('sxgone',h);cb();});}
 function pinClose(){pinEl.classList.remove('show');pinBuf='';pinRender();faceScan.stop();}
 function pinDone(){pinClose();if(pinCb){const f=pinCb;pinCb=null;f();}}
 function pinFail(msg){buzz('error');pinSub.textContent=tr(msg);pinDots.classList.add('shake');setTimeout(function(){pinDots.classList.remove('shake');pinBuf='';pinRender();},380);}
