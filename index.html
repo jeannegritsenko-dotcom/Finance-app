@@ -1878,7 +1878,7 @@ function bioUnlock(){
     bioBusy=false;
     if(!pinEl.classList.contains('show'))return;
     if(ok){buzz('success');finish();}
-    else{if(scanUI)faceScan.fail();pinSub.textContent=tr(settings.pinHash?'Face ID не подтверждён — введите код':'Face ID не подтверждён — нажмите на лицо');}
+    else{pinSub.textContent=tr(settings.pinHash?'Face ID не подтверждён — введите код':'Face ID не подтверждён — нажмите на лицо');}
   });
 }
 function pinOpen(mode,cb){
@@ -1889,6 +1889,7 @@ function pinOpen(mode,cb){
   pinSub.textContent='';pinLink.textContent=tr(bioOnly?'Не получается? Отключить Face ID':mode==='unlock'?'Забыли код?':'Отмена');pinLink.dataset.armed='';
   $('pinBio').innerHTML=(mode==='unlock'&&settings.bio)?'<svg viewBox="0 0 24 24"><use href="#i-face"/></svg>':'';
   pinRender();pinEl.classList.add('show');
+  if(bioOnly)faceScan.start($('pinScan'));
   if(mode==='unlock'&&settings.bio)setTimeout(bioUnlock,350);
 }
 function pinClose(){pinEl.classList.remove('show');pinBuf='';pinRender();faceScan.stop();}
