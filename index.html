@@ -197,6 +197,7 @@ input[type=number]{-moz-appearance:textfield;}
 @media(max-width:360px){#settingsScreen .spage.sub .seg-btn{padding-left:8px;padding-right:8px;}}#settingsScreen .spage.sub .seg-btn{display:flex;align-items:center;justify-content:center;line-height:1;padding-top:0;padding-bottom:0;height:100%;}
 #settingsScreen .spage.sub .settings-row:has(.segmented){padding-top:8.5px;padding-bottom:8.5px;}
 .spage.sub .cur-row{padding-top:6px;padding-bottom:6px;min-height:51px;box-sizing:border-box;}
+#sp-lang .cur-name{font-weight:400;}#sp-lang .cur-row+.cur-row::before{left:16px;}
 #settingsScreen .segmented{height:28px;box-sizing:border-box;}#settingsScreen .seg-btn{line-height:16px;padding-top:4px;padding-bottom:4px;}
 .settings-row+.settings-row{border-top:1px solid var(--hairline);}
 .segmented{display:flex;background:var(--input-bg);border-radius:10px;padding:2px;gap:2px;}
@@ -1496,7 +1497,7 @@ function translateStatic(){
   I18N.forEach(function(o){const s=tr(o.ru);if(o.a)o.n.setAttribute(o.a,s);else o.n.nodeValue=o.pre+s+o.post;});
 }
 function buildLangList(){
-  $('langList').innerHTML=LANGS.map(function(l){return '<div class="cur-row" data-l="'+l.c+'"><span class="cur-sym" style="font-size:13px">'+l.code+'</span><span class="cur-name">'+l.n+'</span><svg class="cur-check" viewBox="0 0 24 24"><use href="#i-check"/></svg></div>';}).join('');
+  $('langList').innerHTML=LANGS.map(function(l){return '<div class="cur-row" data-l="'+l.c+'"><span class="cur-name">'+l.n+'</span><svg class="cur-check" viewBox="0 0 24 24"><use href="#i-check"/></svg></div>';}).join('');
 }
 function applyLang(){translateStatic();buildCurList();renderAll();syncSettingsUI();showGrid();}
 function pluralTx(n){
