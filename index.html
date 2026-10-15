@@ -1241,7 +1241,7 @@ document.getElementById('ctxTopUp').addEventListener('click',function(){
   closeGoalMenu();
   if(!goal)return;
   const val=prompt(tr('Сумма пополнения, ')+cur().s);
-  const amt=parseFloat((val||'').replace(',','.'));
+  const amt=parseMoney(val);
   if(!amt||amt<=0)return;
   goal.saved=Math.min(goal.target,goal.saved+amt);
   renderGoals();
@@ -1323,16 +1323,16 @@ function fieldsHTML(type){
   const S=cur().s;
   if(type==='income'||type==='expense'){
     const de=type==='income'?'💰':'💸';
-    return '<div class="emoji-row"><input class="emoji-input" id="fEmoji" type="text" maxlength="8" autocomplete="off" placeholder="'+de+'"></div><div class="emoji-hint">'+tr('Нажмите на смайлик, чтобы выбрать свой')+'</div><input class="form-input" id="fAmount" type="number" inputmode="decimal" placeholder="'+tr('Сумма')+', '+S+'"><input class="form-input" id="fLabel" type="text" placeholder="'+tr(type==='income'?'Источник':'Категория')+' '+tr('(необязательно)')+'">';
+    return '<div class="emoji-row"><input class="emoji-input" id="fEmoji" type="text" maxlength="8" autocomplete="off" placeholder="'+de+'"></div><div class="emoji-hint">'+tr('Нажмите на смайлик, чтобы выбрать свой')+'</div><input class="form-input money-input" id="fAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="'+tr('Сумма')+', '+S+'"><input class="form-input" id="fLabel" type="text" placeholder="'+tr(type==='income'?'Источник':'Категория')+' '+tr('(необязательно)')+'">';
   }
   const emojiHTML='<div class="emoji-row"><input class="emoji-input" id="fEmoji2" type="text" maxlength="8" autocomplete="off" placeholder="🎯"></div><div class="emoji-hint">'+tr('Нажмите на смайлик, чтобы выбрать свой')+'</div>';
   if(type==='goal'){
-    return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название цели')+'"><input class="form-input" id="fTarget" type="number" inputmode="decimal" placeholder="'+tr('Нужная сумма')+', '+S+'">';
+    return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название цели')+'"><input class="form-input money-input" id="fTarget" type="text" inputmode="decimal" autocomplete="off" placeholder="'+tr('Нужная сумма')+', '+S+'">';
   }
   if(type==='credit'){
-    return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название долга')+'"><input class="form-input" id="fTotal" type="number" inputmode="decimal" placeholder="'+tr('Общая сумма')+', '+S+'"><input class="form-input" id="fPaid" type="number" inputmode="decimal" placeholder="'+tr('Уже выплачено')+', '+S+' '+tr('(необязательно)')+'">';
+    return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название долга')+'"><input class="form-input money-input" id="fTotal" type="text" inputmode="decimal" autocomplete="off" placeholder="'+tr('Общая сумма')+', '+S+'"><input class="form-input money-input" id="fPaid" type="text" inputmode="decimal" autocomplete="off" placeholder="'+tr('Уже выплачено')+', '+S+' '+tr('(необязательно)')+'">';
   }
-  return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название подписки')+'"><input class="form-input" id="fAmount2" type="number" inputmode="decimal" placeholder="'+tr('Сумма')+', '+S+'">';
+  return emojiHTML+'<input class="form-input" id="fName" type="text" placeholder="'+tr('Название подписки')+'"><input class="form-input money-input" id="fAmount2" type="text" inputmode="decimal" autocomplete="off" placeholder="'+tr('Сумма')+', '+S+'">';
 }
 function showGrid(){currentType=null;sheetTitle.textContent=tr('Добавить');backBtn.style.display='none';sheetGrid.style.display='grid';sheetForm.style.display='none';}
 function showForm(type){currentType=type;sheetTitle.textContent=tr(TITLES[type]);backBtn.style.display='inline-block';sheetGrid.style.display='none';formFields.innerHTML=fieldsHTML(type);sheetForm.style.display='block';}
@@ -1341,7 +1341,22 @@ function openForm(type){/* ВРЕМЕННО ОТКЛЮЧЕНО, см. openSheet(
 function closeSheet(){sheet.classList.remove('open');backdrop.classList.remove('open');document.querySelectorAll('.view').forEach(function(v){v.classList.remove('dimmed');});setTimeout(showGrid,300);}
 function notify(msg){buzz('light');toast.textContent=tr(msg);toast.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>toast.classList.remove('show'),1800);}
 function shake(){formFields.classList.add('shake');setTimeout(()=>formFields.classList.remove('shake'),400);}
-function num(id){const v=parseFloat(document.getElementById(id).value);return isNaN(v)||v<0?0:v;}
+function parseMoney(t){const v=parseFloat(String(t||'').replace(/[\s\u00a0\u202f]/g,'').replace(',','.'));return isNaN(v)?0:v;}
+function num(id){const v=parseMoney(document.getElementById(id).value);return v<0?0:v;}
+/* Суммы: пробелы между тысячами прямо при вводе (100 000, 10 000) */
+function fmtMoneyInput(el){
+  const v=el.value,pos=el.selectionStart==null?v.length:el.selectionStart;
+  const before=v.slice(0,pos).replace(/[^\d.,]/g,'').length;
+  let s=v.replace(/[^\d.,]/g,''),int=s,dec=null;const i=s.search(/[.,]/);
+  if(i>=0){int=s.slice(0,i);dec=s.slice(i+1).replace(/[.,]/g,'').slice(0,2);}
+  int=int.replace(/^0+(?=\d)/,'');
+  const sep=settings.lang==='en'?'.':',';
+  const out=int.replace(/\B(?=(\d{3})+(?!\d))/g,' ')+(dec!==null?sep+dec:'');
+  if(out===v)return;
+  el.value=out;let n=0,p=0;while(p<out.length&&n<before){if(/[\d.,]/.test(out[p]))n++;p++;}
+  try{el.setSelectionRange(p,p);}catch(e){}
+}
+document.addEventListener('input',function(e){if(e.target&&e.target.classList&&e.target.classList.contains('money-input'))fmtMoneyInput(e.target);});
 function text(id){return document.getElementById(id).value.trim();}
 
 document.addEventListener('click',function(e){
@@ -1479,7 +1494,7 @@ function syncSettingsUI(){
   $('notifyTimePreview').textContent=timeLabel(settings.notifyTime);
   $('val-currency').textContent=c.c;
   $('val-lang').textContent=(LANGS.find(function(l){return l.c===settings.lang;})||LANGS[0]).n;
-  $('curPreview').textContent=money(128450);
+  $('curPreview').textContent=money(10000);
   document.querySelectorAll('.cur-row[data-c]').forEach(function(r){r.classList.toggle('sel',r.dataset.c===c.c);});
   document.querySelectorAll('.cur-row[data-l]').forEach(function(r){r.classList.toggle('sel',r.dataset.l===settings.lang);});
 }
