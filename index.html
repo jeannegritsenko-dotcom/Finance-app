@@ -196,6 +196,12 @@ input[type=number]{-moz-appearance:textfield;}
 .cal-back.open{opacity:1;pointer-events:auto;}
 .cal-pop{position:absolute;right:16px;top:0;width:272px;border-radius:24px;overflow:hidden;padding:11px 9px 9px;color:var(--text);background:rgba(255,255,255,.16);backdrop-filter:blur(10px) saturate(180%);-webkit-backdrop-filter:blur(10px) saturate(180%);border:1px solid rgba(255,255,255,.55);box-shadow:0 12px 40px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.6);transform:scale(.6);transform-origin:top right;opacity:0;transition:transform .3s cubic-bezier(.3,1.35,.4,1),opacity .18s;}
 :root[data-appearance="dark"] .cal-pop{background:rgba(40,40,46,.18);border-color:rgba(255,255,255,.14);box-shadow:0 12px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.14);}
+.ws-pop{width:210px;padding:5px;}
+.ws-opt{display:flex;align-items:center;justify-content:space-between;width:100%;height:40px;padding:0 12px;border:0;border-radius:15px;background:none;font:inherit;font-size:15px;font-weight:500;color:var(--text);cursor:pointer;text-align:left;}
+.ws-opt+.ws-opt{margin-top:2px;}
+.ws-opt.sel{background:var(--glass-strong);}
+.ws-opt svg{width:18px;height:18px;fill:none;stroke:#ff3b30;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;opacity:0;}
+.ws-opt.sel svg{opacity:1;}
 .cal-back.open .cal-pop{transform:scale(1);opacity:1;}
 .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
 .cal-nav{width:30px;height:30px;border-radius:50%;border:1px solid var(--glass-border);background:var(--glass-strong);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
@@ -685,6 +691,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </div>
   <div class="toast glass" id="toast"></div>
 
+  <div class="cal-back" id="wsBack"><div class="cal-pop ws-pop" role="dialog" id="wsList"></div></div>
   <div class="cal-back" id="calBack"><div class="cal-pop" role="dialog">
     <div class="cal-head"><button class="cal-nav" id="calPrev" aria-label="Назад"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg></button><div class="cal-title" id="calTitle"></div><button class="cal-nav" id="calNext" aria-label="Вперёд"><svg viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></button></div>
     <div class="cal-wd" id="calWd"></div><div class="cal-grid" id="calGrid"></div>
@@ -703,7 +710,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
       <div class="settings-body">
         <div class="acc-big"><input type="file" id="accPhotoFile" accept="image/*" style="display:none"><div class="acc-av" id="accAv2" onclick="$('accPhotoFile').click()" style="cursor:pointer;"></div><div class="acc-photo-btns"><button class="acc-photo" onclick="$('accPhotoFile').click()">Изменить фото</button><button class="acc-photo del" id="accPhotoDel" style="display:none;">Удалить</button></div></div>
         <div class="settings-section" style="display:none"><div class="settings-group-title">Как к вам обращаться</div><input class="form-input" id="accNameInp" type="text" maxlength="32" autocomplete="off"><div class="acc-hint" id="accNameHint"></div></div>
-        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" data-go="tz"><span class="nav-lbl">Часовой пояс</span><span class="nav-val" id="accTzVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" onclick="openMonthCal(this)"><span class="nav-lbl">Начало месяца</span><span class="nav-val" id="accMsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" data-go="weekstart"><span class="nav-lbl">Неделя начинается</span><span class="nav-val" id="accWsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
+        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" data-go="tz"><span class="nav-lbl">Часовой пояс</span><span class="nav-val" id="accTzVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" onclick="openMonthCal(this)"><span class="nav-lbl">Начало месяца</span><span class="nav-val" id="accMsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" onclick="openWeekPop(this)"><span class="nav-lbl">Неделя начинается</span><span class="nav-val" id="accWsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
         <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" style="cursor:default;"><span class="nav-lbl">Telegram ID</span><span class="nav-val" id="accTgId">—</span></div><div class="nav-row plain" data-go="plan"><span class="nav-lbl">Статус</span><span class="nav-val">Free</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
       </div>
     </div>
@@ -711,11 +718,6 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
       <h1 class="sp-title">Часовой пояс</h1>
       <div class="settings-body"><div class="settings-section"><div class="settings-group glass" id="tzAuto"></div></div><div class="settings-section"><div class="settings-group-title">Выбрать вручную</div><div class="settings-group glass" id="tzList"></div><div class="sg-foot">По часовому поясу считаются даты операций, начало дня, недели и месяца.</div></div></div>
-    </div>
-    <div class="spage sub" id="sp-weekstart"><div class="glow"></div>
-      <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
-      <h1 class="sp-title">Неделя начинается</h1>
-      <div class="settings-body"><div class="settings-section"><div class="settings-group glass" id="wsList"></div><div class="sg-foot">С этого дня считается статистика «за неделю».</div></div></div>
     </div>
     <div class="spage sub" id="sp-plan"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
@@ -2156,7 +2158,7 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
       const row=function(attr,v,sel,name,sub){return '<div class="cur-row'+(sel?' sel':'')+'" '+attr+'="'+v+'"><span class="cur-name">'+name+(sub?'<small class="tz-off">'+sub+'</small>':'')+'</span><svg class="cur-check" viewBox="0 0 24 24"><use href="#i-check"/></svg></div>';};
       document.getElementById('tzAuto').innerHTML=row('data-tz','auto',settings.tz==='auto',tr('Автоматически'),tz?tzCity(tz)+' · '+tzOff(tz):'');
       document.getElementById('tzList').innerHTML=TZS.map(function(t){return row('data-tz',t[0],settings.tz===t[0],settings.lang==='en'?t[2]:t[1],tzOff(t[0]));}).join('');
-      document.getElementById('wsList').innerHTML=WEEK.map(function(w){return row('data-ws',w[0],settings.weekStart===w[0],tr(w[1]));}).join('');
+      document.getElementById('wsList').innerHTML=WEEK.map(function(w){return '<button class="ws-opt'+(settings.weekStart===w[0]?' sel':'')+'" data-ws="'+w[0]+'">'+tr(w[1])+'<svg viewBox="0 0 24 24"><use href="#i-check"/></svg></button>';}).join('');
       if(calBack.classList.contains('open'))renderCal();
     }
     window.renderAccount=renderAccount;
@@ -2164,7 +2166,7 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     inp.value=settings.displayName||nm;
     inp.addEventListener('input',function(){settings.displayName=inp.value.trim();saveSettings();renderAccount();});
     document.getElementById('tzList').parentElement.parentElement.addEventListener('click',function(e){const r=e.target.closest('[data-tz]');if(r){settings.tz=r.dataset.tz;changed();}});
-    document.getElementById('wsList').addEventListener('click',function(e){const r=e.target.closest('[data-ws]');if(r){settings.weekStart=+r.dataset.ws;changed();}});
+    document.getElementById('wsList').addEventListener('click',function(e){const r=e.target.closest('[data-ws]');if(r){settings.weekStart=+r.dataset.ws;changed();setTimeout(function(){wsBack.classList.remove('open');},200);}});
     /* всплывающий календарь «Начало месяца» */
     const calBack=document.getElementById('calBack');let calY=0,calM=0;
     const MFULL={ru:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
@@ -2192,14 +2194,20 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     }
     window.openMonthCal=function(row){
       const t=zoned(Date.now());calY=t.getFullYear();calM=t.getMonth();renderCal();
-      /* всплывает справа под строкой «Начало месяца», а если снизу мало места — над ней */
-      const pop=calBack.firstElementChild,r=row.getBoundingClientRect(),h=pop.offsetHeight,vh=window.innerHeight;
+      openPop(calBack,row);
+    };
+    /* стеклянная плашка всплывает справа под строкой, а если снизу мало места — над ней */
+    function openPop(back,row){
+      const pop=back.firstElementChild,r=row.getBoundingClientRect(),h=pop.offsetHeight,vh=window.innerHeight;
       const below=r.bottom+6+h<=vh-12;
       pop.style.top=(below?r.bottom+6:Math.max(12,r.top-6-h))+'px';
       pop.style.right=Math.max(12,window.innerWidth-r.right)+'px';
       pop.style.transformOrigin=below?'top right':'bottom right';
-      calBack.classList.add('open');buzz('light');
-    };
+      back.classList.add('open');buzz('light');
+    }
+    const wsBack=document.getElementById('wsBack');
+    window.openWeekPop=function(row){openPop(wsBack,row);};
+    wsBack.addEventListener('click',function(e){if(e.target===wsBack)wsBack.classList.remove('open');});
     function closeCal(){calBack.classList.remove('open');}
     calBack.addEventListener('click',function(e){if(e.target===calBack)closeCal();});
     document.getElementById('calPrev').addEventListener('click',function(){if(--calM<0){calM=11;calY--;}renderCal();buzz('select');});
