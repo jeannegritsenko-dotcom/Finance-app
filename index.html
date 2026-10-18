@@ -185,6 +185,11 @@ input[type=number]{-moz-appearance:textfield;}
 .acc-av img{width:100%;height:100%;object-fit:cover;display:block;}
 .acc-nm{font-size:18px;font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:7px;}
 .acc-tz{font-size:14px;color:var(--dim);margin-top:3px;}
+.acc-big{display:flex;flex-direction:column;align-items:center;gap:12px;margin:6px 0 22px;}
+.acc-big .acc-av{width:100px;height:100px;font-size:40px;}
+.acc-photo{background:none;border:0;padding:0;font:inherit;font-size:15px;font-weight:600;color:#7a5cff;cursor:pointer;}
+#accNameInp{margin-bottom:0;}
+.acc-hint{font-size:12.5px;color:var(--dim);padding:8px 6px 0;}
 .acc-prem{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:linear-gradient(145deg,#8a6bff,#ff5fd0);font-size:10px;color:#fff;flex-shrink:0;}
 .settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;font-size:15px;gap:10px;}
 #sp-appearance .settings-row{padding:11px 16px;}
@@ -652,11 +657,20 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   <div class="settings-screen" id="settingsScreen">
     <div class="spage" id="sp-root"><div class="glow"></div>
       <h1 class="sp-title" style="margin-top:calc(20px + var(--tg-top) + var(--tg-top-extra,0px));transition:margin-top .2s;">Настройки</h1>
-      <div class="settings-body"><div class="settings-group glass" style="margin-bottom:10px;"><div class="acc-row"><div class="acc-av" id="accAv"></div><div style="min-width:0;"><div class="acc-nm"><span id="accName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span><span id="accEmoji" style="width:22px;height:22px;display:none;flex-shrink:0;"></span><span class="acc-prem" id="accPrem" style="display:none;">★</span></div><div class="acc-tz" id="accTz"></div></div></div></div><div class="settings-group glass"><div class="nav-row noic" data-go="appearance"><span class="nav-lbl">Оформление</span><span class="nav-val" id="val-appearance"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="home"><span class="nav-lbl">Главный экран</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="lang"><span class="nav-lbl">Язык</span><span class="nav-val" id="val-lang"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="currency"><span class="nav-lbl">Валюта</span><span class="nav-val" id="val-currency"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div>
+      <div class="settings-body"><div class="settings-group glass" style="margin-bottom:10px;"><div class="acc-row" onclick="spGo('account')" style="cursor:pointer;"><div class="acc-av" id="accAv"></div><div style="min-width:0;"><div class="acc-nm"><span id="accName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span><span id="accEmoji" style="width:22px;height:22px;display:none;flex-shrink:0;"></span><span class="acc-prem" id="accPrem" style="display:none;">★</span></div><div class="acc-tz" id="accTz"></div></div></div></div><div class="settings-group glass"><div class="nav-row noic" data-go="appearance"><span class="nav-lbl">Оформление</span><span class="nav-val" id="val-appearance"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="home"><span class="nav-lbl">Главный экран</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="lang"><span class="nav-lbl">Язык</span><span class="nav-val" id="val-lang"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="currency"><span class="nav-lbl">Валюта</span><span class="nav-val" id="val-currency"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div>
         <div class="settings-group glass" style="margin-top:10px;"><div class="nav-row noic" data-go="notify"><span class="nav-lbl">Уведомления</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="security"><span class="nav-lbl">Безопасность</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="data"><span class="nav-lbl">Данные</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div>
         <div class="settings-group glass" style="margin-top:10px;"><div class="nav-row noic" data-go="features"><span class="nav-lbl">Возможности Monvelly</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" onclick="notify('Скоро здесь можно будет написать нам')"><span class="nav-lbl">Обратная связь</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="news"><span class="nav-lbl">Новости и обновления</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row noic" data-go="faq"><span class="nav-lbl">Частые вопросы</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div>
         <div class="settings-group glass" style="margin-top:10px;"><div class="nav-row" onclick="notify('Скоро здесь можно будет задонатить звёздами')" style="padding:5px 16px;gap:12px;"><span id="supportLottie" style="width:32px;height:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"></span><div class="sr-t">Поддержать разработчика<small>Поддержать материально мою гениальность</small></div><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div>
     </div>
+    </div>
+    <div class="spage sub" id="sp-account"><div class="glow"></div>
+      <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
+      <div class="settings-body">
+        <div class="acc-big"><div class="acc-av" id="accAv2"></div><button class="acc-photo" onclick="notify('Скоро здесь можно будет сменить фото')">Изменить фото</button></div>
+        <div class="settings-section"><div class="settings-group-title">Как к вам обращаться</div><input class="form-input" id="accNameInp" type="text" maxlength="32" autocomplete="off"><div class="acc-hint" id="accNameHint"></div></div>
+        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain"><span class="nav-lbl">Часовой пояс</span><span class="nav-val" id="accTzVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain"><span class="nav-lbl">Начало месяца</span><span class="nav-val">1 число</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain"><span class="nav-lbl">Неделя начинается</span><span class="nav-val">Понедельник</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
+        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" style="cursor:default;"><span class="nav-lbl">Telegram ID</span><span class="nav-val" id="accTgId">—</span></div><div class="nav-row plain"><span class="nav-lbl">Статус</span><span class="nav-val">Free</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
+      </div>
     </div>
     <div class="spage sub" id="sp-features"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
@@ -2048,10 +2062,18 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
   try{
     const tg0=window.Telegram&&window.Telegram.WebApp,u=(tg0&&tg0.initDataUnsafe&&tg0.initDataUnsafe.user)||null;
     const nm=u?((u.first_name||'')+(u.last_name?' '+u.last_name:'')).trim():'';
-    document.getElementById('accName').textContent=nm||'Профиль';
-    const av=document.getElementById('accAv');
-    av.textContent=(nm||'П').charAt(0).toUpperCase();
-    if(u&&u.photo_url){const im=new Image();im.onload=function(){av.textContent='';av.appendChild(im);};im.src=u.photo_url+(u.photo_url.indexOf('?')>-1?'&':'?')+'_='+Date.now();}
+    const av=document.getElementById('accAv'),av2=document.getElementById('accAv2'),inp=document.getElementById('accNameInp');
+    function showName(){
+      const n=(settings.displayName||'').trim()||nm;
+      document.getElementById('accName').textContent=n||'Профиль';
+      document.getElementById('accNameHint').textContent=tr('Покажем на главном экране')+': «'+tr('Привет')+(n?', '+n:'')+'»';
+      if(!av.querySelector('img')){av.textContent=av2.textContent=(n||'П').charAt(0).toUpperCase();}
+    }
+    inp.value=settings.displayName||nm;
+    inp.addEventListener('input',function(){settings.displayName=inp.value.trim();saveSettings();showName();});
+    showName();
+    if(u&&u.id)document.getElementById('accTgId').textContent=u.id;
+    if(u&&u.photo_url){const src=u.photo_url+(u.photo_url.indexOf('?')>-1?'&':'?')+'_='+Date.now(),im=new Image();im.onload=function(){av.textContent='';av.appendChild(im);const im2=new Image();im2.src=src;av2.textContent='';av2.appendChild(im2);};im.src=src;}
     const EMOJI_API=''; /* ← сюда вставить адрес воркера, например https://monvelly-emoji.ИМЯ.workers.dev */
     if(EMOJI_API&&tg0&&tg0.initData){
       fetch(EMOJI_API+'/emoji-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:tg0.initData})})
@@ -2072,6 +2094,7 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     }
     let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){}
     document.getElementById('accTz').textContent=tz.replace(/_/g,' ').replace(/\//g,' / ');
+    document.getElementById('accTzVal').textContent=tr('Авто')+(tz?' · '+tz.split('/').pop().replace(/_/g,' '):'');
   }catch(e){}
 })();
 (function(){
@@ -2157,7 +2180,7 @@ Object.assign(EN,{'Защита включена':'Protection on','Защита 
   if(settings.bgOn){bgLoad().then(function(b){if(b)setBlob(b);else{settings.bgOn=false;saveSettings();syncSettingsUI();}});}
 })();
 Object.assign(EN,{'Сканирую лицо…':'Scanning face…','Готово':'Done','Face ID не подтверждён — нажмите на лицо':'Face ID not confirmed — tap the face','3D-модель лица для Face ID: «Infinite, 3D Head Scan», Lee Perry-Smith, CC BY 3.0':'Face ID 3D head model: “Infinite, 3D Head Scan” by Lee Perry-Smith, CC BY 3.0'});
-Object.assign(EN,{'Внешний вид и язык':'Appearance & language','Защита и данные':'Security & data','О приложении':'About','Новости и обновления':'News & updates','Частые вопросы':'FAQ'});
+Object.assign(EN,{'Внешний вид и язык':'Appearance & language','Защита и данные':'Security & data','О приложении':'About','Новости и обновления':'News & updates','Изменить фото':'Change photo','Как к вам обращаться':'What should we call you','Покажем на главном экране':'Shown on the home screen','Привет':'Hi','Часовой пояс':'Time zone','Начало месяца':'Month starts','1 число':'1st','Неделя начинается':'Week starts','Понедельник':'Monday','Статус':'Status','Авто':'Auto','Скоро здесь можно будет сменить фото':'Changing the photo is coming soon','Частые вопросы':'FAQ'});
 Object.assign(EN,{'Фон':'Background','Своя фотография под стеклянными карточками':'Your own photo behind the glass cards','Выбрать фото':'Choose photo','Заменить':'Replace','Затемнение':'Dim','Размытие стекла':'Glass blur','Убрать фон':'Remove background','Плотность стекла':'Glass density','Выше — текст на карточках читается лучше':'Higher — text on cards is easier to read','Фон не сохранится после закрытия приложения':'The background will not be kept after closing the app','Не удалось открыть это фото':'Could not open this photo'});
 window.__sx&&__sx.ready();
 </script>
