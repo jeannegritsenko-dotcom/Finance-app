@@ -681,7 +681,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
       <div class="settings-body">
         <div class="acc-big"><input type="file" id="accPhotoFile" accept="image/*" style="display:none"><div class="acc-av" id="accAv2" onclick="$('accPhotoFile').click()" style="cursor:pointer;"></div><div class="acc-photo-btns"><button class="acc-photo" onclick="$('accPhotoFile').click()">Изменить фото</button><button class="acc-photo del" id="accPhotoDel" style="display:none;">Удалить</button></div></div>
-        <div class="settings-section"><div class="settings-group-title">Как к вам обращаться</div><input class="form-input" id="accNameInp" type="text" maxlength="32" autocomplete="off"><div class="acc-hint" id="accNameHint"></div></div>
+        <div class="settings-section" style="display:none"><div class="settings-group-title">Как к вам обращаться</div><input class="form-input" id="accNameInp" type="text" maxlength="32" autocomplete="off"><div class="acc-hint" id="accNameHint"></div></div>
         <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" data-go="tz"><span class="nav-lbl">Часовой пояс</span><span class="nav-val" id="accTzVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" data-go="monthstart"><span class="nav-lbl">Начало месяца</span><span class="nav-val" id="accMsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" data-go="weekstart"><span class="nav-lbl">Неделя начинается</span><span class="nav-val" id="accWsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
         <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" style="cursor:default;"><span class="nav-lbl">Telegram ID</span><span class="nav-val" id="accTgId">—</span></div><div class="nav-row plain" data-go="plan"><span class="nav-lbl">Статус</span><span class="nav-val">Free</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
       </div>
@@ -2125,10 +2125,10 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     }
     function setAv(el,src,letter){el.textContent='';if(src){const im=new Image();im.src=src;el.appendChild(im);}else el.textContent=letter;}
     function renderAccount(){
-      const n=(settings.displayName||'').trim()||nm,letter=(n||'П').charAt(0).toUpperCase(),src=settings.avatar||tgPhoto;
+      const n=nm,letter=(n||'П').charAt(0).toUpperCase(),src=settings.avatar||tgPhoto;
       document.getElementById('accName').textContent=n||tr('Профиль');
       document.getElementById('accNameHint').textContent=tr('Покажем на главном экране')+': «'+tr('Привет')+(n?', '+n:'')+'»';
-      const hh=document.getElementById('homeHello');hh.textContent=n?tr('Привет')+', '+n+' 👋':'';hh.style.display=n?'':'none';
+      const hh=document.getElementById('homeHello');hh.textContent='';hh.style.display='none';
       setAv(av,src,letter);setAv(av2,src,letter);
       document.getElementById('accPhotoDel').style.display=settings.avatar?'':'none';
       document.getElementById('accTz').textContent=(settings.tz==='auto'?tz.replace(/_/g,' ').replace(/\//g,' / '):tzCity(settings.tz)+' · '+tzOff(settings.tz));
