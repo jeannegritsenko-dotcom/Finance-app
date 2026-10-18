@@ -1372,7 +1372,7 @@ const SUPPORT_LOTTIE={"tgs":1,"v":"5.5.2","fr":60,"ip":0,"op":180,"w":512,"h":51
 loadData();
 renderBalance();renderGoals();renderCredits();renderSubs();renderSources();renderStats();renderRecent();
 attachSwipe(document.getElementById('goalsList'),{list:goals,msg:'Цель удалена',tap:function(row){const g=goals.find(function(x){return String(x.id)===row.dataset.id;});openDetail(g?g.name:'Цель');},longPress:openGoalMenu,onRemove:function(){if(!goals.length)renderGoals();else saveData();}});
-attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:function(row){const c=credits.find(function(x){return String(x.id)===row.dataset.id;});openDetail(c?c.name:'Задолженность');},onRemove:function(){if(!credits.length)renderCredits();else saveData();}});
+attachSwipe(document.getElementById('creditsList'),{list:credits,msg:'Долг удалён',tap:function(row){const c=credits.find(function(x){return String(x.id)===row.dataset.id;});openDetail(c?c.name:tr('Задолженность'));},onRemove:function(){if(!credits.length)renderCredits();else saveData();}});
 attachSwipe(document.getElementById('subsList'),{list:subs,msg:'Подписка удалена',tap:function(row){const s=subs.find(function(x){return String(x.id)===row.dataset.id;});openDetail(s?s.name:'Подписка');},onRemove:function(){if(!subs.length)renderSubs();else saveData();}});
 attachSwipe(document.getElementById('sourcesList'),{list:sources,msg:'Источник дохода удалён',onRemove:function(s){if(s){balance-=s.amount;monthDelta-=s.amount;monthIncome-=s.amount;renderBalance();renderStats();}if(!sources.length)renderSources();}});
 attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Транзакция удалена',onRemove:function(t){
@@ -2143,7 +2143,7 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     }
     function setAv(el,src,letter){el.textContent='';if(src){const im=new Image();im.src=src;el.appendChild(im);}else el.textContent=letter;}
     function renderAccount(){
-      const n=nm,letter=(n||'П').charAt(0).toUpperCase(),src=settings.avatar||tgPhoto;
+      const n=nm,letter=(n||tr('Профиль')).charAt(0).toUpperCase(),src=settings.avatar||tgPhoto;
       document.getElementById('accName').textContent=n||tr('Профиль');
       document.getElementById('accNameHint').textContent=tr('Покажем на главном экране')+': «'+tr('Привет')+(n?', '+n:'')+'»';
       const hh=document.getElementById('homeHello');hh.textContent='';hh.style.display='none';
@@ -2328,6 +2328,9 @@ Object.assign(EN,{'Защита включена':'Protection on','Защита 
 Object.assign(EN,{'Сканирую лицо…':'Scanning face…','Готово':'Done','Face ID не подтверждён — нажмите на лицо':'Face ID not confirmed — tap the face','3D-модель лица для Face ID: «Infinite, 3D Head Scan», Lee Perry-Smith, CC BY 3.0':'Face ID 3D head model: “Infinite, 3D Head Scan” by Lee Perry-Smith, CC BY 3.0'});
 Object.assign(EN,{'Внешний вид и язык':'Appearance & language','Защита и данные':'Security & data','О приложении':'About','Новости и обновления':'News & updates','Изменить фото':'Change photo','Как к вам обращаться':'What should we call you','Покажем на главном экране':'Shown on the home screen','Привет':'Hi','Часовой пояс':'Time zone','Начало месяца':'Month starts','1 число':'1st','Неделя начинается':'Week starts','Понедельник':'Monday','Статус':'Status','Авто':'Auto','Удалить':'Remove','Профиль':'Profile','Автоматически':'Automatic','Выбрать вручную':'Choose manually','Воскресенье':'Sunday','Суббота':'Saturday','По часовому поясу считаются даты операций, начало дня, недели и месяца.':'Transaction dates and the start of each day, week and month follow this time zone.','С этого дня считается статистика «за неделю».':'Weekly stats are counted from this day.','Месяц считается с 1-го числа. Если зарплата приходит, например, 10-го — выберите 10, и статистика «за месяц» будет считаться с этого дня.':'The month starts on the 1st. If you get paid on, say, the 10th, pick 10 and monthly stats will count from that day.','Ваш план':'Your plan','Все функции приложения доступны бесплатно':'All app features are available for free','Скоро':'Soon','Мы готовим Premium. Расскажем о нём в «Новостях и обновлениях».':'Premium is on its way. We will share the details in News & updates.','Частые вопросы':'FAQ'});
 Object.assign(EN,{'Фон':'Background','Своя фотография под стеклянными карточками':'Your own photo behind the glass cards','Выбрать фото':'Choose photo','Заменить':'Replace','Затемнение':'Dim','Размытие стекла':'Glass blur','Убрать фон':'Remove background','Плотность стекла':'Glass density','Выше — текст на карточках читается лучше':'Higher — text on cards is easier to read','Фон не сохранится после закрытия приложения':'The background will not be kept after closing the app','Не удалось открыть это фото':'Could not open this photo'});
+Object.assign(EN,{'Задолженность':'Debt','Анимация':'Animation','Вибрация':'Vibration','Подписка':'Subscription','Этот экран пока в разработке':'This screen is still in development','Скоро здесь появится содержимое':'Content is coming soon','Стрелками можно менять порядок последних транзакций, целей, задолженностей и регулярных платежей на главном экране.':'Use the arrows to reorder recent transactions, goals, debts and recurring payments on the home screen.','Сохранить в облако':'Save to cloud','Восстановить из облака':'Restore from cloud','Вперёд':'Next','Назад':'Back'});
+/* часть переводов выше подключается после первой отрисовки — переводим экран ещё раз */
+if(settings.lang!=='ru')applyLang();
 window.__sx&&__sx.ready();
 </script>
 </body>
