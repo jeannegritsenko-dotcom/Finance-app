@@ -189,6 +189,19 @@ input[type=number]{-moz-appearance:textfield;}
 .acc-big .acc-av{width:100px;height:100px;font-size:40px;}
 .acc-photo{background:none;border:0;padding:0;font:inherit;font-size:15px;font-weight:600;color:#7a5cff;cursor:pointer;}
 #accNameInp{margin-bottom:0;}
+.acc-photo-btns{display:flex;gap:18px;}
+.acc-photo.del{color:#c22a22;}
+.home-hello{font-size:22px;font-weight:800;letter-spacing:-.4px;margin:2px 4px 12px;}
+.ms-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:12px;}
+.ms-day{aspect-ratio:1;border:0;border-radius:12px;background:transparent;font:inherit;font-size:16px;font-weight:600;color:var(--text);cursor:pointer;font-variant-numeric:tabular-nums;transition:background .15s;}
+.ms-day.sel{background:linear-gradient(145deg,#6a5cff,#b05bff);color:#fff;}
+.cur-name small.tz-off{display:inline;margin-left:6px;}
+.plan-card{padding:16px;}
+.plan-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.plan-name{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:800;letter-spacing:-.3px;}
+.plan-badge{font-size:12.5px;font-weight:600;color:var(--dim);background:var(--icon-bg);border-radius:999px;padding:5px 12px;}
+.plan-badge.soon{color:#fff;background:linear-gradient(145deg,#8a6bff,#ff5fd0);}
+.plan-txt{font-size:14px;color:var(--dim);margin-top:8px;line-height:1.4;}
 .acc-hint{font-size:12.5px;color:var(--dim);padding:8px 6px 0;}
 .acc-prem{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:linear-gradient(145deg,#8a6bff,#ff5fd0);font-size:10px;color:#fff;flex-shrink:0;}
 .settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;font-size:15px;gap:10px;}
@@ -516,6 +529,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </div>
 
   <main id="view-home" class="view active">
+    <div class="home-hello" id="homeHello" style="display:none"></div>
     <div class="balance-card glass">
       <div class="balance-label">Баланс</div>
       <div class="balance-amount" id="balanceAmount" style="visibility:hidden">0 ₽</div>
@@ -666,10 +680,33 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
     <div class="spage sub" id="sp-account"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Настройки</button></div>
       <div class="settings-body">
-        <div class="acc-big"><div class="acc-av" id="accAv2"></div><button class="acc-photo" onclick="notify('Скоро здесь можно будет сменить фото')">Изменить фото</button></div>
+        <div class="acc-big"><input type="file" id="accPhotoFile" accept="image/*" style="display:none"><div class="acc-av" id="accAv2" onclick="$('accPhotoFile').click()" style="cursor:pointer;"></div><div class="acc-photo-btns"><button class="acc-photo" onclick="$('accPhotoFile').click()">Изменить фото</button><button class="acc-photo del" id="accPhotoDel" style="display:none;">Удалить</button></div></div>
         <div class="settings-section"><div class="settings-group-title">Как к вам обращаться</div><input class="form-input" id="accNameInp" type="text" maxlength="32" autocomplete="off"><div class="acc-hint" id="accNameHint"></div></div>
-        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain"><span class="nav-lbl">Часовой пояс</span><span class="nav-val" id="accTzVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain"><span class="nav-lbl">Начало месяца</span><span class="nav-val">1 число</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain"><span class="nav-lbl">Неделя начинается</span><span class="nav-val">Понедельник</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
-        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" style="cursor:default;"><span class="nav-lbl">Telegram ID</span><span class="nav-val" id="accTgId">—</span></div><div class="nav-row plain"><span class="nav-lbl">Статус</span><span class="nav-val">Free</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
+        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" data-go="tz"><span class="nav-lbl">Часовой пояс</span><span class="nav-val" id="accTzVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" data-go="monthstart"><span class="nav-lbl">Начало месяца</span><span class="nav-val" id="accMsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" data-go="weekstart"><span class="nav-lbl">Неделя начинается</span><span class="nav-val" id="accWsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
+        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" style="cursor:default;"><span class="nav-lbl">Telegram ID</span><span class="nav-val" id="accTgId">—</span></div><div class="nav-row plain" data-go="plan"><span class="nav-lbl">Статус</span><span class="nav-val">Free</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
+      </div>
+    </div>
+    <div class="spage sub" id="sp-tz"><div class="glow"></div>
+      <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
+      <h1 class="sp-title">Часовой пояс</h1>
+      <div class="settings-body"><div class="settings-section"><div class="settings-group glass" id="tzAuto"></div></div><div class="settings-section"><div class="settings-group-title">Выбрать вручную</div><div class="settings-group glass" id="tzList"></div><div class="sg-foot">По часовому поясу считаются даты операций, начало дня, недели и месяца.</div></div></div>
+    </div>
+    <div class="spage sub" id="sp-monthstart"><div class="glow"></div>
+      <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
+      <h1 class="sp-title">Начало месяца</h1>
+      <div class="settings-body"><div class="settings-section"><div class="settings-group glass"><div class="ms-grid" id="msGrid"></div></div><div class="sg-foot" id="msFoot"></div></div></div>
+    </div>
+    <div class="spage sub" id="sp-weekstart"><div class="glow"></div>
+      <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
+      <h1 class="sp-title">Неделя начинается</h1>
+      <div class="settings-body"><div class="settings-section"><div class="settings-group glass" id="wsList"></div><div class="sg-foot">С этого дня считается статистика «за неделю».</div></div></div>
+    </div>
+    <div class="spage sub" id="sp-plan"><div class="glow"></div>
+      <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
+      <h1 class="sp-title">Статус</h1>
+      <div class="settings-body">
+        <div class="settings-section"><div class="settings-group glass plan-card"><div class="plan-top"><span class="plan-name">Free</span><span class="plan-badge">Ваш план</span></div><div class="plan-txt">Все функции приложения доступны бесплатно</div></div></div>
+        <div class="settings-section"><div class="settings-group glass plan-card prem"><div class="plan-top"><span class="plan-name"><span class="acc-prem">★</span>Premium</span><span class="plan-badge soon">Скоро</span></div><div class="plan-txt">Мы готовим Premium. Расскажем о нём в «Новостях и обновлениях».</div></div></div>
       </div>
     </div>
     <div class="spage sub" id="sp-features"><div class="glow"></div>
@@ -789,7 +826,7 @@ let sources=[];
 let _uid=1;const uid=()=>_uid++;
 [goals,credits,sources,subs].forEach(function(a){a.forEach(function(o){o.id=uid();});});
 const $=id=>document.getElementById(id);
-const DEF={theme:'light',bgOn:false,bgDim:10,bgBlur:24,bgGlass:50,bgv:2,showCredits:true,hideBalance:false,homeGoals:true,homeQuick:true,homeDelta:true,homeSubs:true,homeRecent:true,sectionOrder:['recent','subs','goals','credits'],compact:false,currency:'RUB',nCredit:true,nDays:3,nGoals:true,nReport:false,nDaily:false,pinHash:null,bio:false,lockAfter:1,lang:'ru',anim:true,vibration:true,showBalanceNotif:true,notifyTime:1200};
+const DEF={theme:'light',bgOn:false,bgDim:10,bgBlur:24,bgGlass:50,bgv:2,showCredits:true,hideBalance:false,homeGoals:true,homeQuick:true,homeDelta:true,homeSubs:true,homeRecent:true,sectionOrder:['recent','subs','goals','credits'],compact:false,currency:'RUB',nCredit:true,nDays:3,nGoals:true,nReport:false,nDaily:false,pinHash:null,bio:false,lockAfter:1,lang:'ru',anim:true,vibration:true,showBalanceNotif:true,notifyTime:1200,displayName:'',avatar:null,tz:'auto',monthStart:1,weekStart:1};
 let settings=Object.assign({},DEF);
 let _savedRaw={};
 try{_savedRaw=JSON.parse(localStorage.getItem('financeSettings')||'{}');}catch(e){}
@@ -900,15 +937,27 @@ function renderSources(){saveData();
   initRows(el);
 }
 const MONTH_SHORT={ru:['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],en:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']};
+/* дата с «настенным» временем выбранного часового пояса */
+function zoned(ts){
+  const d=new Date(ts);
+  if(!settings.tz||settings.tz==='auto')return d;
+  try{return new Date(d.toLocaleString('en-US',{timeZone:settings.tz}));}catch(e){return d;}
+}
+/* к какому месяцу относится момент с учётом «начала месяца» */
+function finMonth(ts){
+  const d=zoned(ts);let y=d.getFullYear(),m=d.getMonth();
+  if(d.getDate()<(settings.monthStart||1)){m--;if(m<0){m=11;y--;}}
+  return {y:y,m:m};
+}
 function monthIncomeSum(y,m){
   return transactions.filter(function(t){
     if(t.type!=='income')return false;
-    const d=new Date(t.ts);
-    return d.getFullYear()===y&&d.getMonth()===m;
+    const d=finMonth(t.ts);
+    return d.y===y&&d.m===m;
   }).reduce(function(a,t){return a+t.amount;},0);
 }
 function fmtDT(ts){
-  const d=new Date(ts),lang=settings.lang==='en'?'en':'ru',mon=MONTH_SHORT[lang][d.getMonth()];
+  const d=zoned(ts),lang=settings.lang==='en'?'en':'ru',mon=MONTH_SHORT[lang][d.getMonth()];
   const hh=String(d.getHours()).padStart(2,'0'),mm=String(d.getMinutes()).padStart(2,'0');
   return d.getDate()+' '+(lang==='en'?mon:mon.toLowerCase()+'.')+' • '+hh+':'+mm;
 }
@@ -928,7 +977,7 @@ function renderRecent(){
   initRows(el);
 }
 function renderStats(){
-  const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  const fm=finMonth(Date.now()),y=fm.y,m=fm.m;
   const cur=monthIncomeSum(y,m);
   const prevD=new Date(y,m-1,1),prev=monthIncomeSum(prevD.getFullYear(),prevD.getMonth());
   const statsEl=document.getElementById('statsAmount');
@@ -1554,7 +1603,7 @@ function translateStatic(){
 function buildLangList(){
   $('langList').innerHTML=LANGS.map(function(l){return '<div class="cur-row" data-l="'+l.c+'"><span class="cur-name">'+l.n+'</span><svg class="cur-check" viewBox="0 0 24 24"><use href="#i-check"/></svg></div>';}).join('');
 }
-function applyLang(){translateStatic();buildCurList();renderAll();syncSettingsUI();showGrid();}
+function applyLang(){translateStatic();buildCurList();renderAll();syncSettingsUI();showGrid();if(window.renderAccount)renderAccount();}
 function pluralTx(n){
   const n10=n%10,n100=n%100;
   if(n100>=11&&n100<=14)return tr('транзакций');
@@ -1564,10 +1613,11 @@ function pluralTx(n){
 }
 let reportPeriod='week';
 function periodStart(p){
-  const d=new Date();
-  if(p==='week'){const day=(d.getDay()+6)%7;d.setHours(0,0,0,0);d.setDate(d.getDate()-day);}
-  else{d.setHours(0,0,0,0);d.setDate(1);}
-  return d.getTime();
+  const now=Date.now(),z=zoned(now),d=new Date(z.getTime());
+  d.setHours(0,0,0,0);
+  if(p==='week'){d.setDate(d.getDate()-(d.getDay()-settings.weekStart+7)%7);}
+  else{const ms=settings.monthStart||1;if(d.getDate()<ms)d.setMonth(d.getMonth()-1);d.setDate(ms);}
+  return now-(z.getTime()-d.getTime());
 }
 function renderReport(){
   const start=periodStart(reportPeriod);
@@ -2063,17 +2113,55 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     const tg0=window.Telegram&&window.Telegram.WebApp,u=(tg0&&tg0.initDataUnsafe&&tg0.initDataUnsafe.user)||null;
     const nm=u?((u.first_name||'')+(u.last_name?' '+u.last_name:'')).trim():'';
     const av=document.getElementById('accAv'),av2=document.getElementById('accAv2'),inp=document.getElementById('accNameInp');
-    function showName(){
-      const n=(settings.displayName||'').trim()||nm;
-      document.getElementById('accName').textContent=n||'Профиль';
-      document.getElementById('accNameHint').textContent=tr('Покажем на главном экране')+': «'+tr('Привет')+(n?', '+n:'')+'»';
-      if(!av.querySelector('img')){av.textContent=av2.textContent=(n||'П').charAt(0).toUpperCase();}
+    let tgPhoto=null;
+    let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){}
+    const TZS=[['Europe/Kaliningrad','Калининград','Kaliningrad'],['Europe/Moscow','Москва','Moscow'],['Europe/Samara','Самара','Samara'],['Asia/Yekaterinburg','Екатеринбург','Yekaterinburg'],['Asia/Omsk','Омск','Omsk'],['Asia/Novosibirsk','Новосибирск','Novosibirsk'],['Asia/Krasnoyarsk','Красноярск','Krasnoyarsk'],['Asia/Irkutsk','Иркутск','Irkutsk'],['Asia/Yakutsk','Якутск','Yakutsk'],['Asia/Vladivostok','Владивосток','Vladivostok'],['Asia/Magadan','Магадан','Magadan'],['Asia/Kamchatka','Камчатка','Kamchatka'],['Europe/Minsk','Минск','Minsk'],['Europe/Kyiv','Киев','Kyiv'],['Asia/Almaty','Алматы','Almaty'],['Asia/Tashkent','Ташкент','Tashkent'],['Asia/Tbilisi','Тбилиси','Tbilisi'],['Asia/Yerevan','Ереван','Yerevan'],['Asia/Baku','Баку','Baku'],['Europe/Istanbul','Стамбул','Istanbul'],['Europe/Berlin','Берлин','Berlin'],['Europe/London','Лондон','London'],['Asia/Dubai','Дубай','Dubai'],['Asia/Bangkok','Бангкок','Bangkok'],['America/New_York','Нью-Йорк','New York'],['America/Los_Angeles','Лос-Анджелес','Los Angeles']];
+    const WEEK=[[1,'Понедельник'],[0,'Воскресенье'],[6,'Суббота']];
+    function tzCity(id){const f=TZS.find(function(t){return t[0]===id;});return f?(settings.lang==='en'?f[2]:f[1]):(id||'').split('/').pop().replace(/_/g,' ');}
+    function tzOff(id){
+      try{const n=new Date(),w=new Date(n.toLocaleString('en-US',{timeZone:id})),l=new Date(n.toLocaleString('en-US',{timeZone:'UTC'}));
+        const m=Math.round((w-l)/60000),h=Math.floor(Math.abs(m)/60),mm=Math.abs(m)%60;
+        return 'UTC'+(m<0?'−':'+')+h+(mm?':'+String(mm).padStart(2,'0'):'');}catch(e){return '';}
     }
+    function setAv(el,src,letter){el.textContent='';if(src){const im=new Image();im.src=src;el.appendChild(im);}else el.textContent=letter;}
+    function renderAccount(){
+      const n=(settings.displayName||'').trim()||nm,letter=(n||'П').charAt(0).toUpperCase(),src=settings.avatar||tgPhoto;
+      document.getElementById('accName').textContent=n||tr('Профиль');
+      document.getElementById('accNameHint').textContent=tr('Покажем на главном экране')+': «'+tr('Привет')+(n?', '+n:'')+'»';
+      const hh=document.getElementById('homeHello');hh.textContent=n?tr('Привет')+', '+n+' 👋':'';hh.style.display=n?'':'none';
+      setAv(av,src,letter);setAv(av2,src,letter);
+      document.getElementById('accPhotoDel').style.display=settings.avatar?'':'none';
+      document.getElementById('accTz').textContent=(settings.tz==='auto'?tz.replace(/_/g,' ').replace(/\//g,' / '):tzCity(settings.tz)+' · '+tzOff(settings.tz));
+      document.getElementById('accTzVal').textContent=settings.tz==='auto'?tr('Авто')+(tz?' · '+tzCity(tz):''):tzCity(settings.tz);
+      document.getElementById('accMsVal').textContent=settings.lang==='en'?'Day '+settings.monthStart:settings.monthStart+' число';
+      document.getElementById('accWsVal').textContent=tr((WEEK.find(function(w){return w[0]===settings.weekStart;})||WEEK[0])[1]);
+      const row=function(attr,v,sel,name,sub){return '<div class="cur-row'+(sel?' sel':'')+'" '+attr+'="'+v+'"><span class="cur-name">'+name+(sub?'<small class="tz-off">'+sub+'</small>':'')+'</span><svg class="cur-check" viewBox="0 0 24 24"><use href="#i-check"/></svg></div>';};
+      document.getElementById('tzAuto').innerHTML=row('data-tz','auto',settings.tz==='auto',tr('Автоматически'),tz?tzCity(tz)+' · '+tzOff(tz):'');
+      document.getElementById('tzList').innerHTML=TZS.map(function(t){return row('data-tz',t[0],settings.tz===t[0],settings.lang==='en'?t[2]:t[1],tzOff(t[0]));}).join('');
+      document.getElementById('wsList').innerHTML=WEEK.map(function(w){return row('data-ws',w[0],settings.weekStart===w[0],tr(w[1]));}).join('');
+      let g='';for(let d=1;d<=28;d++)g+='<button class="ms-day'+(settings.monthStart===d?' sel':'')+'" data-ms="'+d+'">'+d+'</button>';
+      document.getElementById('msGrid').innerHTML=g;
+      document.getElementById('msFoot').textContent=settings.monthStart===1?tr('Месяц считается с 1-го числа. Если зарплата приходит, например, 10-го — выберите 10, и статистика «за месяц» будет считаться с этого дня.'):(settings.lang==='en'?'The month runs from day '+settings.monthStart+' to day '+(settings.monthStart-1)+' of the next month.':'Месяц считается с '+settings.monthStart+'-го числа до '+(settings.monthStart-1)+'-го числа следующего месяца.');
+    }
+    window.renderAccount=renderAccount;
+    function changed(){saveSettings();renderAccount();buzz('select');try{renderAll();}catch(e){}try{renderReport();}catch(e){}}
     inp.value=settings.displayName||nm;
-    inp.addEventListener('input',function(){settings.displayName=inp.value.trim();saveSettings();showName();});
-    showName();
+    inp.addEventListener('input',function(){settings.displayName=inp.value.trim();saveSettings();renderAccount();});
+    document.getElementById('tzList').parentElement.parentElement.addEventListener('click',function(e){const r=e.target.closest('[data-tz]');if(r){settings.tz=r.dataset.tz;changed();}});
+    document.getElementById('wsList').addEventListener('click',function(e){const r=e.target.closest('[data-ws]');if(r){settings.weekStart=+r.dataset.ws;changed();}});
+    document.getElementById('msGrid').addEventListener('click',function(e){const r=e.target.closest('[data-ms]');if(r){settings.monthStart=+r.dataset.ms;changed();}});
+    document.getElementById('accPhotoFile').addEventListener('change',function(){
+      const f=this.files&&this.files[0];this.value='';if(!f)return;
+      const rd=new FileReader();rd.onload=function(){const im=new Image();im.onload=function(){
+        const S=256,c=document.createElement('canvas');c.width=c.height=S;const k=Math.min(im.width,im.height);
+        c.getContext('2d').drawImage(im,(im.width-k)/2,(im.height-k)/2,k,k,0,0,S,S);
+        settings.avatar=c.toDataURL('image/jpeg',.85);saveSettings();renderAccount();buzz('select');
+      };im.src=rd.result;};rd.readAsDataURL(f);
+    });
+    document.getElementById('accPhotoDel').addEventListener('click',function(){settings.avatar=null;saveSettings();renderAccount();buzz('select');});
     if(u&&u.id)document.getElementById('accTgId').textContent=u.id;
-    if(u&&u.photo_url){const src=u.photo_url+(u.photo_url.indexOf('?')>-1?'&':'?')+'_='+Date.now(),im=new Image();im.onload=function(){av.textContent='';av.appendChild(im);const im2=new Image();im2.src=src;av2.textContent='';av2.appendChild(im2);};im.src=src;}
+    renderAccount();
+    if(u&&u.photo_url){const src=u.photo_url+(u.photo_url.indexOf('?')>-1?'&':'?')+'_='+Date.now(),im=new Image();im.onload=function(){tgPhoto=src;renderAccount();};im.src=src;}
     const EMOJI_API=''; /* ← сюда вставить адрес воркера, например https://monvelly-emoji.ИМЯ.workers.dev */
     if(EMOJI_API&&tg0&&tg0.initData){
       fetch(EMOJI_API+'/emoji-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:tg0.initData})})
@@ -2092,9 +2180,6 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
           }
         }).catch(function(){});
     }
-    let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){}
-    document.getElementById('accTz').textContent=tz.replace(/_/g,' ').replace(/\//g,' / ');
-    document.getElementById('accTzVal').textContent=tr('Авто')+(tz?' · '+tz.split('/').pop().replace(/_/g,' '):'');
   }catch(e){}
 })();
 (function(){
@@ -2180,7 +2265,7 @@ Object.assign(EN,{'Защита включена':'Protection on','Защита 
   if(settings.bgOn){bgLoad().then(function(b){if(b)setBlob(b);else{settings.bgOn=false;saveSettings();syncSettingsUI();}});}
 })();
 Object.assign(EN,{'Сканирую лицо…':'Scanning face…','Готово':'Done','Face ID не подтверждён — нажмите на лицо':'Face ID not confirmed — tap the face','3D-модель лица для Face ID: «Infinite, 3D Head Scan», Lee Perry-Smith, CC BY 3.0':'Face ID 3D head model: “Infinite, 3D Head Scan” by Lee Perry-Smith, CC BY 3.0'});
-Object.assign(EN,{'Внешний вид и язык':'Appearance & language','Защита и данные':'Security & data','О приложении':'About','Новости и обновления':'News & updates','Изменить фото':'Change photo','Как к вам обращаться':'What should we call you','Покажем на главном экране':'Shown on the home screen','Привет':'Hi','Часовой пояс':'Time zone','Начало месяца':'Month starts','1 число':'1st','Неделя начинается':'Week starts','Понедельник':'Monday','Статус':'Status','Авто':'Auto','Скоро здесь можно будет сменить фото':'Changing the photo is coming soon','Частые вопросы':'FAQ'});
+Object.assign(EN,{'Внешний вид и язык':'Appearance & language','Защита и данные':'Security & data','О приложении':'About','Новости и обновления':'News & updates','Изменить фото':'Change photo','Как к вам обращаться':'What should we call you','Покажем на главном экране':'Shown on the home screen','Привет':'Hi','Часовой пояс':'Time zone','Начало месяца':'Month starts','1 число':'1st','Неделя начинается':'Week starts','Понедельник':'Monday','Статус':'Status','Авто':'Auto','Удалить':'Remove','Профиль':'Profile','Автоматически':'Automatic','Выбрать вручную':'Choose manually','Воскресенье':'Sunday','Суббота':'Saturday','По часовому поясу считаются даты операций, начало дня, недели и месяца.':'Transaction dates and the start of each day, week and month follow this time zone.','С этого дня считается статистика «за неделю».':'Weekly stats are counted from this day.','Месяц считается с 1-го числа. Если зарплата приходит, например, 10-го — выберите 10, и статистика «за месяц» будет считаться с этого дня.':'The month starts on the 1st. If you get paid on, say, the 10th, pick 10 and monthly stats will count from that day.','Ваш план':'Your plan','Все функции приложения доступны бесплатно':'All app features are available for free','Скоро':'Soon','Мы готовим Premium. Расскажем о нём в «Новостях и обновлениях».':'Premium is on its way. We will share the details in News & updates.','Частые вопросы':'FAQ'});
 Object.assign(EN,{'Фон':'Background','Своя фотография под стеклянными карточками':'Your own photo behind the glass cards','Выбрать фото':'Choose photo','Заменить':'Replace','Затемнение':'Dim','Размытие стекла':'Glass blur','Убрать фон':'Remove background','Плотность стекла':'Glass density','Выше — текст на карточках читается лучше':'Higher — text on cards is easier to read','Фон не сохранится после закрытия приложения':'The background will not be kept after closing the app','Не удалось открыть это фото':'Could not open this photo'});
 window.__sx&&__sx.ready();
 </script>
