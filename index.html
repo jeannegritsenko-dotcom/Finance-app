@@ -192,9 +192,31 @@ input[type=number]{-moz-appearance:textfield;}
 .acc-photo-btns{display:flex;gap:18px;}
 .acc-photo.del{color:#c22a22;}
 .home-hello{font-size:22px;font-weight:800;letter-spacing:-.4px;margin:2px 4px 12px;}
-.ms-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:12px;}
-.ms-day{aspect-ratio:1;border:0;border-radius:12px;background:transparent;font:inherit;font-size:16px;font-weight:600;color:var(--text);cursor:pointer;font-variant-numeric:tabular-nums;transition:background .15s;}
-.ms-day.sel{background:linear-gradient(145deg,#6a5cff,#b05bff);color:#fff;}
+.cal-back{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .22s;}
+.cal-back.open{opacity:1;pointer-events:auto;}
+.cal-pop{position:relative;width:100%;max-width:350px;border-radius:30px;overflow:hidden;padding:18px 14px 14px;color:var(--text);background:rgba(255,255,255,.6);backdrop-filter:blur(30px) saturate(190%);-webkit-backdrop-filter:blur(30px) saturate(190%);border:1px solid rgba(255,255,255,.7);box-shadow:0 20px 60px rgba(30,20,80,.25),inset 0 1px 0 rgba(255,255,255,.8);transform:scale(.88);opacity:0;transition:transform .32s cubic-bezier(.3,1.4,.4,1),opacity .2s;}
+:root[data-appearance="dark"] .cal-pop{background:rgba(30,30,36,.58);border-color:rgba(255,255,255,.12);box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12);}
+.cal-back.open .cal-pop{transform:scale(1);opacity:1;}
+.cal-pop::before{content:"";position:absolute;left:50%;top:0;width:150px;height:4px;margin-left:-75px;border-radius:0 0 4px 4px;background:#7b4dff;box-shadow:0 0 24px 6px rgba(123,77,255,.45);}
+.cal-pop::after{content:"";position:absolute;left:50%;top:-70px;width:240px;height:150px;margin-left:-120px;border-radius:50%;background:radial-gradient(closest-side,rgba(123,77,255,.28),transparent);pointer-events:none;}
+.cal-head{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-nav{width:38px;height:38px;border-radius:50%;border:1px solid var(--glass-border);background:var(--glass-strong);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+.cal-nav svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.cal-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+.cal-wd,.cal-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(7,1fr);}
+.cal-wd span{text-align:center;font-size:12.5px;font-weight:600;color:var(--dim);padding:4px 0 8px;}
+.cal-grid{row-gap:4px;}
+.cal-d{position:relative;height:40px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;font-variant-numeric:tabular-nums;border:0;background:none;font-family:inherit;color:var(--text);padding:0;cursor:pointer;}
+.cal-d.out b{opacity:.35;}
+.cal-d.off{cursor:default;}.cal-d.off b{opacity:.35;}
+.cal-d.in{background:rgba(123,77,255,.1);}
+.cal-d.rs{border-radius:20px 0 0 20px;}.cal-d.re{border-radius:0 20px 20px 0;}.cal-d.rs.re{border-radius:20px;}
+.cal-d.today:not(.sel) b{color:#7b4dff;font-weight:700;}
+.cal-d b{position:relative;z-index:1;font-weight:inherit;}
+.cal-d.sel::before{content:"";position:absolute;width:38px;height:38px;border-radius:50%;background:#7b4dff;box-shadow:0 4px 16px rgba(123,77,255,.55);}
+.cal-d.sel b{color:#fff;font-weight:600;}
+.cal-foot{position:relative;z-index:1;font-size:12.5px;color:var(--dim);text-align:center;line-height:1.4;padding:12px 8px 12px;}
+.cal-done{display:block;width:100%;height:46px;border-radius:16px;border:0;background:#7b4dff;color:#fff;font:inherit;font-size:16px;font-weight:600;cursor:pointer;}
 .cur-name small.tz-off{display:inline;margin-left:6px;}
 .plan-card{padding:16px;}
 .plan-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
@@ -668,6 +690,12 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </div>
   <div class="toast glass" id="toast"></div>
 
+  <div class="cal-back" id="calBack"><div class="cal-pop" role="dialog">
+    <div class="cal-head"><button class="cal-nav" id="calPrev" aria-label="Назад"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg></button><div class="cal-title" id="calTitle"></div><button class="cal-nav" id="calNext" aria-label="Вперёд"><svg viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></button></div>
+    <div class="cal-wd" id="calWd"></div><div class="cal-grid" id="calGrid"></div>
+    <div class="cal-foot" id="calFoot"></div>
+    <button class="cal-done" id="calDone">Готово</button>
+  </div></div>
   <div class="settings-screen" id="settingsScreen">
     <div class="spage" id="sp-root"><div class="glow"></div>
       <h1 class="sp-title" style="margin-top:calc(20px + var(--tg-top) + var(--tg-top-extra,0px));transition:margin-top .2s;">Настройки</h1>
@@ -682,7 +710,7 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
       <div class="settings-body">
         <div class="acc-big"><input type="file" id="accPhotoFile" accept="image/*" style="display:none"><div class="acc-av" id="accAv2" onclick="$('accPhotoFile').click()" style="cursor:pointer;"></div><div class="acc-photo-btns"><button class="acc-photo" onclick="$('accPhotoFile').click()">Изменить фото</button><button class="acc-photo del" id="accPhotoDel" style="display:none;">Удалить</button></div></div>
         <div class="settings-section" style="display:none"><div class="settings-group-title">Как к вам обращаться</div><input class="form-input" id="accNameInp" type="text" maxlength="32" autocomplete="off"><div class="acc-hint" id="accNameHint"></div></div>
-        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" data-go="tz"><span class="nav-lbl">Часовой пояс</span><span class="nav-val" id="accTzVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" data-go="monthstart"><span class="nav-lbl">Начало месяца</span><span class="nav-val" id="accMsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" data-go="weekstart"><span class="nav-lbl">Неделя начинается</span><span class="nav-val" id="accWsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
+        <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" data-go="tz"><span class="nav-lbl">Часовой пояс</span><span class="nav-val" id="accTzVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" onclick="openMonthCal()"><span class="nav-lbl">Начало месяца</span><span class="nav-val" id="accMsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div><div class="nav-row plain" data-go="weekstart"><span class="nav-lbl">Неделя начинается</span><span class="nav-val" id="accWsVal"></span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
         <div class="settings-section"><div class="settings-group glass"><div class="nav-row plain" style="cursor:default;"><span class="nav-lbl">Telegram ID</span><span class="nav-val" id="accTgId">—</span></div><div class="nav-row plain" data-go="plan"><span class="nav-lbl">Статус</span><span class="nav-val">Free</span><svg class="nav-chev" viewBox="0 0 24 24"><use href="#i-chev-r"/></svg></div></div></div>
       </div>
     </div>
@@ -690,11 +718,6 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
       <h1 class="sp-title">Часовой пояс</h1>
       <div class="settings-body"><div class="settings-section"><div class="settings-group glass" id="tzAuto"></div></div><div class="settings-section"><div class="settings-group-title">Выбрать вручную</div><div class="settings-group glass" id="tzList"></div><div class="sg-foot">По часовому поясу считаются даты операций, начало дня, недели и месяца.</div></div></div>
-    </div>
-    <div class="spage sub" id="sp-monthstart"><div class="glow"></div>
-      <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
-      <h1 class="sp-title">Начало месяца</h1>
-      <div class="settings-body"><div class="settings-section"><div class="settings-group glass"><div class="ms-grid" id="msGrid"></div></div><div class="sg-foot" id="msFoot"></div></div></div>
     </div>
     <div class="spage sub" id="sp-weekstart"><div class="glow"></div>
       <div class="sp-top"><button class="sp-back" onclick="spBack()"><svg viewBox="0 0 24 24"><use href="#i-chev-l"/></svg>Профиль</button></div>
@@ -2139,9 +2162,7 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
       document.getElementById('tzAuto').innerHTML=row('data-tz','auto',settings.tz==='auto',tr('Автоматически'),tz?tzCity(tz)+' · '+tzOff(tz):'');
       document.getElementById('tzList').innerHTML=TZS.map(function(t){return row('data-tz',t[0],settings.tz===t[0],settings.lang==='en'?t[2]:t[1],tzOff(t[0]));}).join('');
       document.getElementById('wsList').innerHTML=WEEK.map(function(w){return row('data-ws',w[0],settings.weekStart===w[0],tr(w[1]));}).join('');
-      let g='';for(let d=1;d<=28;d++)g+='<button class="ms-day'+(settings.monthStart===d?' sel':'')+'" data-ms="'+d+'">'+d+'</button>';
-      document.getElementById('msGrid').innerHTML=g;
-      document.getElementById('msFoot').textContent=settings.monthStart===1?tr('Месяц считается с 1-го числа. Если зарплата приходит, например, 10-го — выберите 10, и статистика «за месяц» будет считаться с этого дня.'):(settings.lang==='en'?'The month runs from day '+settings.monthStart+' to day '+(settings.monthStart-1)+' of the next month.':'Месяц считается с '+settings.monthStart+'-го числа до '+(settings.monthStart-1)+'-го числа следующего месяца.');
+      if(calBack.classList.contains('open'))renderCal();
     }
     window.renderAccount=renderAccount;
     function changed(){saveSettings();renderAccount();buzz('select');try{renderAll();}catch(e){}try{renderReport();}catch(e){}}
@@ -2149,7 +2170,40 @@ if(settings.pinHash||settings.bio)pinOpen('unlock');
     inp.addEventListener('input',function(){settings.displayName=inp.value.trim();saveSettings();renderAccount();});
     document.getElementById('tzList').parentElement.parentElement.addEventListener('click',function(e){const r=e.target.closest('[data-tz]');if(r){settings.tz=r.dataset.tz;changed();}});
     document.getElementById('wsList').addEventListener('click',function(e){const r=e.target.closest('[data-ws]');if(r){settings.weekStart=+r.dataset.ws;changed();}});
-    document.getElementById('msGrid').addEventListener('click',function(e){const r=e.target.closest('[data-ms]');if(r){settings.monthStart=+r.dataset.ms;changed();}});
+    /* всплывающий календарь «Начало месяца» */
+    const calBack=document.getElementById('calBack');let calY=0,calM=0;
+    const MFULL={ru:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
+    const MGEN=['янв.','февр.','марта','апр.','мая','июня','июля','авг.','сент.','окт.','нояб.','дек.'];
+    const WD={ru:['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],en:['Su','Mo','Tu','We','Th','Fr','Sa']};
+    function renderCal(){
+      const en=settings.lang==='en',ms=settings.monthStart,ws=settings.weekStart;
+      document.getElementById('calTitle').textContent=MFULL[en?'en':'ru'][calM]+' '+calY;
+      let w='';for(let k=0;k<7;k++)w+='<span>'+WD[en?'en':'ru'][(ws+k)%7]+'</span>';
+      document.getElementById('calWd').innerHTML=w;
+      const first=new Date(calY,calM,1),lead=(first.getDay()-ws+7)%7,start=new Date(calY,calM,ms),end=new Date(calY,calM+1,ms),t=zoned(Date.now());
+      const rows=Math.ceil((lead+new Date(calY,calM+1,0).getDate())/7);
+      let g='';
+      for(let c=0;c<rows*7;c++){
+        const d=new Date(calY,calM,1-lead+c),inM=d.getMonth()===calM,day=d.getDate(),col=c%7;
+        const inR=d>=start&&d<end,prevIn=inR&&col>0&&new Date(d.getFullYear(),d.getMonth(),day-1)>=start,nextIn=inR&&col<6&&new Date(d.getFullYear(),d.getMonth(),day+1)<end;
+        let cls='cal-d';
+        if(!inM)cls+=' out';else if(day>28)cls+=' off';
+        if(inR){cls+=' in';if(!prevIn)cls+=' rs';if(!nextIn)cls+=' re';}
+        if(inM&&day===ms)cls+=' sel';
+        if(d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&day===t.getDate())cls+=' today';
+        g+='<button class="'+cls+'"'+(inM&&day<=28?' data-ms="'+day+'"':'')+'><b>'+day+'</b></button>';
+      }
+      document.getElementById('calGrid').innerHTML=g;
+      const last=new Date(calY,calM+1,ms-1),fmt=function(x){return en?MFULL.en[x.getMonth()].slice(0,3)+' '+x.getDate():x.getDate()+' '+MGEN[x.getMonth()];};
+      document.getElementById('calFoot').textContent=(en?'Your month: ':'Ваш месяц: ')+fmt(start)+' — '+fmt(last);
+    }
+    window.openMonthCal=function(){const t=zoned(Date.now());calY=t.getFullYear();calM=t.getMonth();renderCal();calBack.classList.add('open');buzz('light');};
+    function closeCal(){calBack.classList.remove('open');}
+    calBack.addEventListener('click',function(e){if(e.target===calBack)closeCal();});
+    document.getElementById('calDone').addEventListener('click',closeCal);
+    document.getElementById('calPrev').addEventListener('click',function(){if(--calM<0){calM=11;calY--;}renderCal();buzz('select');});
+    document.getElementById('calNext').addEventListener('click',function(){if(++calM>11){calM=0;calY++;}renderCal();buzz('select');});
+    document.getElementById('calGrid').addEventListener('click',function(e){const r=e.target.closest('[data-ms]');if(r){settings.monthStart=+r.dataset.ms;changed();}});
     document.getElementById('accPhotoFile').addEventListener('change',function(){
       const f=this.files&&this.files[0];this.value='';if(!f)return;
       const rd=new FileReader();rd.onload=function(){const im=new Image();im.onload=function(){
