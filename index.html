@@ -646,7 +646,6 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </main>
 
   <main id="view-goals" class="view">
-    <div style="padding-top:20px;"></div>
     <div class="empty-card glass"><div class="empty-emoji">🛠️</div><div class="empty-title">Этот экран пока в разработке</div><div class="empty-sub">Скоро здесь появится содержимое</div></div>
   </main>
 
@@ -1430,6 +1429,11 @@ attachSwipe(document.getElementById('recentList'),{list:transactions,msg:'Тра
 const tabs=document.querySelectorAll('.tab[data-view]');
 const views={home:document.getElementById('view-home'),stats:document.getElementById('view-stats'),goals:document.getElementById('view-goals')};
 let _pillGlassTimer=null;
+/* заголовок сверху — по открытой вкладке */
+function setTopTitle(){
+  const v=document.querySelector('.view.active'),id=v?v.id.replace('view-',''):'home';
+  document.querySelector('.topbar-title').textContent=tr(({stats:'Статистика',goals:'План и лимиты'})[id]||'Финансы');
+}
 function moveTabPill(el){
   const pill=document.getElementById('tabPill');
   if(!pill||!el)return;
@@ -1444,8 +1448,7 @@ tabs.forEach(t=>t.addEventListener('click',()=>{
   Object.values(views).forEach(v=>v.classList.remove('active'));
   views[t.dataset.view].classList.add('active');
   moveTabPill(t);
-  document.querySelector('.topbar').style.display=t.dataset.view==='goals'?'none':'';
-  document.querySelector('.topbar-title').textContent=tr(t.dataset.view==='stats'?'Статистика':'Финансы');
+  setTopTitle();
 }));
 requestAnimationFrame(function(){
   const pill=document.getElementById('tabPill');
@@ -1660,7 +1663,7 @@ function translateStatic(){
 function buildLangList(){
   $('langList').innerHTML=LANGS.map(function(l){return '<div class="cur-row" data-l="'+l.c+'"><span class="cur-name">'+l.n+'</span><svg class="cur-check" viewBox="0 0 24 24"><use href="#i-check"/></svg></div>';}).join('');
 }
-function applyLang(){translateStatic();buildCurList();renderAll();syncSettingsUI();showGrid();if(window.renderAccount)renderAccount();if(window.renderAccent)renderAccent();}
+function applyLang(){translateStatic();setTopTitle();buildCurList();renderAll();syncSettingsUI();showGrid();if(window.renderAccount)renderAccount();if(window.renderAccent)renderAccent();}
 function pluralTx(n){
   const n10=n%10,n100=n%100;
   if(n100>=11&&n100<=14)return tr('транзакций');
@@ -2384,7 +2387,7 @@ Object.assign(EN,{'Защита включена':'Protection on','Защита 
 Object.assign(EN,{'Сканирую лицо…':'Scanning face…','Готово':'Done','Face ID не подтверждён — нажмите на лицо':'Face ID not confirmed — tap the face','3D-модель лица для Face ID: «Infinite, 3D Head Scan», Lee Perry-Smith, CC BY 3.0':'Face ID 3D head model: “Infinite, 3D Head Scan” by Lee Perry-Smith, CC BY 3.0'});
 Object.assign(EN,{'Внешний вид и язык':'Appearance & language','Защита и данные':'Security & data','О приложении':'About','Новости и обновления':'News & updates','Изменить фото':'Change photo','Как к вам обращаться':'What should we call you','Покажем на главном экране':'Shown on the home screen','Привет':'Hi','Часовой пояс':'Time zone','Начало месяца':'Month starts','1 число':'1st','Неделя начинается':'Week starts','Понедельник':'Monday','Статус':'Status','Авто':'Auto','Удалить':'Remove','Профиль':'Profile','Автоматически':'Automatic','Выбрать вручную':'Choose manually','Воскресенье':'Sunday','Суббота':'Saturday','По часовому поясу считаются даты операций, начало дня, недели и месяца.':'Transaction dates and the start of each day, week and month follow this time zone.','С этого дня считается статистика «за неделю».':'Weekly stats are counted from this day.','Месяц считается с 1-го числа. Если зарплата приходит, например, 10-го — выберите 10, и статистика «за месяц» будет считаться с этого дня.':'The month starts on the 1st. If you get paid on, say, the 10th, pick 10 and monthly stats will count from that day.','Ваш план':'Your plan','Все функции приложения доступны бесплатно':'All app features are available for free','Скоро':'Soon','Мы готовим Premium. Расскажем о нём в «Новостях и обновлениях».':'Premium is on its way. We will share the details in News & updates.','Частые вопросы':'FAQ'});
 Object.assign(EN,{'Фон':'Background','Своя фотография под стеклянными карточками':'Your own photo behind the glass cards','Выбрать фото':'Choose photo','Заменить':'Replace','Затемнение':'Dim','Размытие стекла':'Glass blur','Убрать фон':'Remove background','Плотность стекла':'Glass density','Выше — текст на карточках читается лучше':'Higher — text on cards is easier to read','Фон не сохранится после закрытия приложения':'The background will not be kept after closing the app','Не удалось открыть это фото':'Could not open this photo'});
-Object.assign(EN,{'Без акцента':'None','Салатовый':'Lime','Личный финансовый помощник':'Personal finance assistant','Приложение помогает спокойно вести учёт денег: записывать доходы и расходы, следить за задолженностями и регулярными платежами и копить на свои цели.':'Monvelly helps you keep track of money calmly: log income and expenses, keep an eye on debts and recurring payments, and save toward your goals.','Акцентный цвет':'Accent color','Задолженность':'Debt','Анимация':'Animation','Вибрация':'Vibration','Подписка':'Subscription','Этот экран пока в разработке':'This screen is still in development','Скоро здесь появится содержимое':'Content is coming soon','Стрелками можно менять порядок последних транзакций, целей, задолженностей и регулярных платежей на главном экране.':'Use the arrows to reorder recent transactions, goals, debts and recurring payments on the home screen.','Сохранить в облако':'Save to cloud','Восстановить из облака':'Restore from cloud','Вперёд':'Next','Назад':'Back'});
+Object.assign(EN,{'План и лимиты':'Plan & limits','Без акцента':'None','Салатовый':'Lime','Личный финансовый помощник':'Personal finance assistant','Приложение помогает спокойно вести учёт денег: записывать доходы и расходы, следить за задолженностями и регулярными платежами и копить на свои цели.':'Monvelly helps you keep track of money calmly: log income and expenses, keep an eye on debts and recurring payments, and save toward your goals.','Акцентный цвет':'Accent color','Задолженность':'Debt','Анимация':'Animation','Вибрация':'Vibration','Подписка':'Subscription','Этот экран пока в разработке':'This screen is still in development','Скоро здесь появится содержимое':'Content is coming soon','Стрелками можно менять порядок последних транзакций, целей, задолженностей и регулярных платежей на главном экране.':'Use the arrows to reorder recent transactions, goals, debts and recurring payments on the home screen.','Сохранить в облако':'Save to cloud','Восстановить из облака':'Restore from cloud','Вперёд':'Next','Назад':'Back'});
 /* часть переводов выше подключается после первой отрисовки — переводим экран ещё раз */
 if(settings.lang!=='ru')applyLang();
 window.__sx&&__sx.ready();
