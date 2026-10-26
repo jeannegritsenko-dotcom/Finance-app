@@ -487,6 +487,13 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
 .plan-seg{height:36px;border-radius:999px;margin:2px 0 14px;box-sizing:border-box;}
 .plan-seg .seg-btn{border-radius:999px;font-size:14px;font-weight:400;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;height:100%;}
 .plan-pane[hidden]{display:none;}
+/* Переключатели вверху «Статистики»: обе пилюли одной высоты */
+.stat-seg{position:relative;display:flex;height:44px;box-sizing:border-box;padding:3px;background:var(--input-bg);border-radius:999px;margin:2px 0 10px;}
+.stat-seg .seg-btn{position:relative;z-index:1;flex:1;height:100%;padding:0;border-radius:999px;background:none!important;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:400;line-height:1;color:var(--text)!important;transition:color .25s;}
+.stat-seg .seg-btn.active{color:#0b0b0c!important;font-weight:600;}
+.stat-ind{position:absolute;top:3px;bottom:3px;left:0;width:0;border-radius:999px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .32s cubic-bezier(.3,.8,.3,1),width .32s cubic-bezier(.3,.8,.3,1);}
+.stat-seg:not(.ready) .stat-ind{transition:none;}
+@media(prefers-reduced-motion:reduce){.stat-ind{transition:none;}}
 /* Пункт «Фон» временно скрыт: вернуть — BG_FEATURE=true и убрать это правило */
 .bg-feature,#sp-appearance .dep-bg{display:none!important;}
 /* Заголовки-капсулы на экране «Главный экран» */
@@ -628,18 +635,20 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </main>
 
   <main id="view-stats" class="view">
+    <div class="stat-seg" id="statsType"><i class="stat-ind"></i><button class="seg-btn active" data-stype="expense">Расход</button><button class="seg-btn" data-stype="income">Доход</button></div>
+    <div class="stat-seg" id="statsPer"><i class="stat-ind"></i><button class="seg-btn" data-sper="day">День</button><button class="seg-btn" data-sper="week">Неделя</button><button class="seg-btn active" data-sper="month">Месяц</button><button class="seg-btn" data-sper="year">Год</button></div>
     <div class="stats-summary glass">
-      <div class="balance-label">Доход в этом месяце</div>
+      <div class="balance-label" id="statsLabel">Расход в этом месяце</div>
       <div class="stats-row">
         <span class="stats-amount" id="statsAmount" style="visibility:hidden">0 ₽</span>
         <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="deltaText">+0%</span></span>
       </div>
     </div>
     <div class="chart-card glass">
-      <div class="chart-title">Доход по месяцам</div>
+      <div class="chart-title" id="statsChartTitle">Доход по месяцам</div>
       <div class="wave" id="monthBars"></div>
     </div>
-    <div class="section-header"><h2>Источники дохода</h2></div>
+    <div class="section-header" id="srcHead"><h2>Источники дохода</h2></div>
     <div id="sourcesList"></div>
     <div class="section-header"><h2>Отчёт</h2></div>
     <div class="report-card glass">
@@ -1040,10 +1049,34 @@ function renderRecent(){
   el.innerHTML=rowHTML(t.id,20,'','<span class="recent-emoji">'+emoji+'</span><div class="recent-info"><div class="recent-name">'+esc(label)+'</div><div class="recent-date">'+fmtDT(t.ts)+'</div></div><span class="recent-amount" style="color:'+color+'">'+sign+money(t.amount)+'</span>');
   initRows(el);
 }
+let statsType='expense',statsPer='month';
+const STAT_LBL={income:{day:'Доход сегодня',week:'Доход на этой неделе',month:'Доход в этом месяце',year:'Доход в этом году'},expense:{day:'Расход сегодня',week:'Расход на этой неделе',month:'Расход в этом месяце',year:'Расход в этом году'}};
+function monthSum(type,y,m){
+  return transactions.filter(function(t){
+    if(t.type!==type)return false;
+    const d=finMonth(t.ts);
+    return d.y===y&&d.m===m;
+  }).reduce(function(a,t){return a+t.amount;},0);
+}
+function sumRange(type,s,e){return transactions.filter(function(t){return t.type===type&&t.ts>=s&&t.ts<e;}).reduce(function(a,t){return a+t.amount;},0);}
+function statsSummary(y,m){
+  const T=statsType;
+  if(statsPer==='month'){const pd=new Date(y,m-1,1);return {cur:monthSum(T,y,m),prev:monthSum(T,pd.getFullYear(),pd.getMonth())};}
+  const now=Date.now(),z=zoned(now),off=z.getTime()-now;
+  const real=function(d){return d.getTime()-off;};
+  const d0=new Date(z.getTime());d0.setHours(0,0,0,0);
+  let s,ps;
+  if(statsPer==='day'){s=real(d0);ps=s-86400000;}
+  else if(statsPer==='week'){s=periodStart('week');ps=s-7*86400000;}
+  else{s=real(new Date(d0.getFullYear(),0,1));ps=real(new Date(d0.getFullYear()-1,0,1));}
+  return {cur:sumRange(T,s,Infinity),prev:sumRange(T,ps,s)};
+}
 function renderStats(){
   const fm=finMonth(Date.now()),y=fm.y,m=fm.m;
-  const cur=monthIncomeSum(y,m);
-  const prevD=new Date(y,m-1,1),prev=monthIncomeSum(prevD.getFullYear(),prevD.getMonth());
+  const ST=statsType,sm=statsSummary(y,m),cur=sm.cur,prev=sm.prev;
+  $('statsLabel').textContent=tr(STAT_LBL[ST][statsPer]);
+  $('statsChartTitle').textContent=tr(ST==='income'?'Доход по месяцам':'Расход по месяцам');
+  $('srcHead').style.display=ST==='income'?'':'none';$('sourcesList').style.display=ST==='income'?'':'none';
   const statsEl=document.getElementById('statsAmount');
   statsEl.textContent=settings.hideBalance?'••••••':money(cur);
   statsEl.style.visibility='';
@@ -1058,7 +1091,7 @@ function renderStats(){
   const bars=[];
   for(let i=5;i>=0;i--){
     const d=new Date(y,m-i,1);
-    bars.push({label:MONTH_SHORT[settings.lang==='en'?'en':'ru'][d.getMonth()],val:monthIncomeSum(d.getFullYear(),d.getMonth()),cur:i===0});
+    bars.push({label:MONTH_SHORT[settings.lang==='en'?'en':'ru'][d.getMonth()],val:monthSum(ST,d.getFullYear(),d.getMonth()),cur:i===0});
   }
   const W=320,TOP=58,BASE=112,N=bars.length;
   const hi=Math.max.apply(null,bars.map(function(b){return b.val;})),lo=Math.min.apply(null,bars.map(function(b){return b.val;}));
@@ -1711,6 +1744,22 @@ $('reportPeriod').addEventListener('click',function(e){
   reportPeriod=b.dataset.period;
   $('reportPeriod').querySelectorAll('.seg-btn').forEach(function(x){x.classList.toggle('active',x===b);});
   renderReport();buzz('select');
+});
+function statSlide(seg){
+  const a=seg.querySelector('.seg-btn.active'),i=seg.querySelector('.stat-ind');
+  if(!a||!a.offsetWidth)return;
+  i.style.width=a.offsetWidth+'px';i.style.transform='translateX('+a.offsetLeft+'px)';
+  if(!seg.classList.contains('ready'))requestAnimationFrame(function(){seg.classList.add('ready');});
+}
+['statsType','statsPer'].forEach(function(id){
+  const seg=$(id);
+  seg.addEventListener('click',function(e){
+    const b=e.target.closest('.seg-btn');if(!b||b.classList.contains('active'))return;
+    if(id==='statsType')statsType=b.dataset.stype;else statsPer=b.dataset.sper;
+    seg.querySelectorAll('.seg-btn').forEach(function(x){x.classList.toggle('active',x===b);});
+    statSlide(seg);buzz('select');renderStats();
+  });
+  if(window.ResizeObserver)new ResizeObserver(function(){statSlide(seg);}).observe(seg);
 });
 const SECTION_LABELS={recent:'Последние транзакции',subs:'Регулярные платежи',goals:'Цели',credits:'Задолженности'};
 const SECTION_EL={recent:'recentSection',subs:'subsSection',goals:'goalsSection',credits:'creditsSection'};
@@ -2402,7 +2451,7 @@ Object.assign(EN,{'Защита включена':'Protection on','Защита 
   if(settings.bgOn){bgLoad().then(function(b){if(b)setBlob(b);else{settings.bgOn=false;saveSettings();syncSettingsUI();}});}
 })();
 Object.assign(EN,{'Сканирую лицо…':'Scanning face…','Готово':'Done','Face ID не подтверждён — нажмите на лицо':'Face ID not confirmed — tap the face','3D-модель лица для Face ID: «Infinite, 3D Head Scan», Lee Perry-Smith, CC BY 3.0':'Face ID 3D head model: “Infinite, 3D Head Scan” by Lee Perry-Smith, CC BY 3.0'});
-Object.assign(EN,{'Внешний вид и язык':'Appearance & language','Защита и данные':'Security & data','О приложении':'About','Новости и обновления':'News & updates','Изменить фото':'Change photo','Как к вам обращаться':'What should we call you','Покажем на главном экране':'Shown on the home screen','Привет':'Hi','Часовой пояс':'Time zone','Начало месяца':'Month starts','1 число':'1st','Неделя начинается':'Week starts','Понедельник':'Monday','Статус':'Status','Авто':'Auto','Удалить':'Remove','Профиль':'Profile','Автоматически':'Automatic','Выбрать вручную':'Choose manually','Воскресенье':'Sunday','Суббота':'Saturday','По часовому поясу считаются даты операций, начало дня, недели и месяца.':'Transaction dates and the start of each day, week and month follow this time zone.','С этого дня считается статистика «за неделю».':'Weekly stats are counted from this day.','Месяц считается с 1-го числа. Если зарплата приходит, например, 10-го — выберите 10, и статистика «за месяц» будет считаться с этого дня.':'The month starts on the 1st. If you get paid on, say, the 10th, pick 10 and monthly stats will count from that day.','Ваш план':'Your plan','Все функции приложения доступны бесплатно':'All app features are available for free','Скоро':'Soon','Мы готовим Premium. Расскажем о нём в «Новостях и обновлениях».':'Premium is on its way. We will share the details in News & updates.','Частые вопросы':'FAQ'});
+Object.assign(EN,{'Расход в этом месяце':'Expenses this month','Расход сегодня':'Expenses today','Расход на этой неделе':'Expenses this week','Расход в этом году':'Expenses this year','Доход сегодня':'Income today','Доход на этой неделе':'Income this week','Доход в этом году':'Income this year','Расход по месяцам':'Expenses by month','День':'Day','Неделя':'Week','Месяц':'Month','Год':'Year','Внешний вид и язык':'Appearance & language','Защита и данные':'Security & data','О приложении':'About','Новости и обновления':'News & updates','Изменить фото':'Change photo','Как к вам обращаться':'What should we call you','Покажем на главном экране':'Shown on the home screen','Привет':'Hi','Часовой пояс':'Time zone','Начало месяца':'Month starts','1 число':'1st','Неделя начинается':'Week starts','Понедельник':'Monday','Статус':'Status','Авто':'Auto','Удалить':'Remove','Профиль':'Profile','Автоматически':'Automatic','Выбрать вручную':'Choose manually','Воскресенье':'Sunday','Суббота':'Saturday','По часовому поясу считаются даты операций, начало дня, недели и месяца.':'Transaction dates and the start of each day, week and month follow this time zone.','С этого дня считается статистика «за неделю».':'Weekly stats are counted from this day.','Месяц считается с 1-го числа. Если зарплата приходит, например, 10-го — выберите 10, и статистика «за месяц» будет считаться с этого дня.':'The month starts on the 1st. If you get paid on, say, the 10th, pick 10 and monthly stats will count from that day.','Ваш план':'Your plan','Все функции приложения доступны бесплатно':'All app features are available for free','Скоро':'Soon','Мы готовим Premium. Расскажем о нём в «Новостях и обновлениях».':'Premium is on its way. We will share the details in News & updates.','Частые вопросы':'FAQ'});
 Object.assign(EN,{'Фон':'Background','Своя фотография под стеклянными карточками':'Your own photo behind the glass cards','Выбрать фото':'Choose photo','Заменить':'Replace','Затемнение':'Dim','Размытие стекла':'Glass blur','Убрать фон':'Remove background','Плотность стекла':'Glass density','Выше — текст на карточках читается лучше':'Higher — text on cards is easier to read','Фон не сохранится после закрытия приложения':'The background will not be kept after closing the app','Не удалось открыть это фото':'Could not open this photo'});
 Object.assign(EN,{'Предупреждать о лимитах':'Limit alerts','План и лимиты':'Plan & limits','Без акцента':'None','Салатовый':'Lime','Личный финансовый помощник':'Personal finance assistant','Приложение помогает спокойно вести учёт денег: записывать доходы и расходы, следить за задолженностями и регулярными платежами и копить на свои цели.':'Monvelly helps you keep track of money calmly: log income and expenses, keep an eye on debts and recurring payments, and save toward your goals.','Акцентный цвет':'Accent color','Задолженность':'Debt','Анимация':'Animation','Вибрация':'Vibration','Подписка':'Subscription','Этот экран пока в разработке':'This screen is still in development','Скоро здесь появится содержимое':'Content is coming soon','Стрелками можно менять порядок последних транзакций, целей, задолженностей и регулярных платежей на главном экране.':'Use the arrows to reorder recent transactions, goals, debts and recurring payments on the home screen.','Сохранить в облако':'Save to cloud','Восстановить из облака':'Restore from cloud','Вперёд':'Next','Назад':'Back'});
 /* часть переводов выше подключается после первой отрисовки — переводим экран ещё раз */
