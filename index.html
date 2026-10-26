@@ -637,10 +637,10 @@ textarea.form-input{display:block;resize:none;line-height:1.35;font-size:13px;}
   </main>
 
   <main id="view-stats" class="view">
-    <div class="stat-seg" id="statsType"><i class="stat-ind"></i><button class="seg-btn" data-stype="income">Доход</button><button class="seg-btn active" data-stype="expense">Расход</button></div>
+    <div class="stat-seg" id="statsType"><i class="stat-ind"></i><button class="seg-btn active" data-stype="income">Доход</button><button class="seg-btn" data-stype="expense">Расход</button></div>
     <div class="stat-seg" id="statsPer"><i class="stat-ind"></i><button class="seg-btn" data-sper="day">День</button><button class="seg-btn" data-sper="week">Неделя</button><button class="seg-btn active" data-sper="month">Месяц</button><button class="seg-btn" data-sper="year">Год</button></div>
     <div class="stats-summary glass">
-      <div class="balance-label" id="statsLabel">Расход в этом месяце</div>
+      <div class="balance-label" id="statsLabel">Доход в этом месяце</div>
       <div class="stats-row">
         <span class="stats-amount" id="statsAmount" style="visibility:hidden">0 ₽</span>
         <span class="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span id="deltaText">+0%</span></span>
@@ -1051,7 +1051,7 @@ function renderRecent(){
   el.innerHTML=rowHTML(t.id,20,'','<span class="recent-emoji">'+emoji+'</span><div class="recent-info"><div class="recent-name">'+esc(label)+'</div><div class="recent-date">'+fmtDT(t.ts)+'</div></div><span class="recent-amount" style="color:'+color+'">'+sign+money(t.amount)+'</span>');
   initRows(el);
 }
-let statsType='expense',statsPer='month';
+let statsType='income',statsPer='month';
 const STAT_LBL={income:{day:'Доход сегодня',week:'Доход на этой неделе',month:'Доход в этом месяце',year:'Доход в этом году'},expense:{day:'Расход сегодня',week:'Расход на этой неделе',month:'Расход в этом месяце',year:'Расход в этом году'}};
 function monthSum(type,y,m){
   return transactions.filter(function(t){
